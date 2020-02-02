@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:minerva_investimentos/data/marketValue.dart';
 import 'package:minerva_investimentos/utils/router.dart';
 
 class LogInView extends StatelessWidget {
@@ -34,7 +36,11 @@ class LogInView extends StatelessWidget {
                 },
                 
                 onFieldSubmitted: (_)
-                {
+                async {
+                  //TODO: tirar market value daqui
+                  //MarketValue ma = MarketValue();
+                  //Response response = await ma.intradayValue("TGAR11");
+                  //print(response.body.toString());
                   Navigator.pushReplacementNamed(context, homeRoute);
                 },
               ),

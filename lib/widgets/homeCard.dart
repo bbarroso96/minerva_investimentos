@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-
 class HomeCardWidget extends StatelessWidget {
-
-  const HomeCardWidget({Key key, this.ativo, this.cotacao, this.dividendo}) : super(key: key);
+  const HomeCardWidget({Key key, this.ativo, this.cotacao, this.dividendo})
+      : super(key: key);
 
   final Text ativo;
   final Text cotacao;
@@ -11,27 +10,36 @@ class HomeCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-
       child: Card(
         color: Colors.white,
-
-        child: Column(
-          children: <Widget>[
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+          child: Column(
+            children: <Widget>[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                ativo, dividendo, cotacao      
-                ],
+                  Row(
+                    children: <Widget>[
+                      ativo, SizedBox(width: 10,)
+                      ,dividendo
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text("DY: "),
+                      cotacao
+                    ],
+                  )],
               ),
-      Text( 'separator')
-            
-          ],
+              Divider(),
+              Text('separator')
+            ],
+          ),
         ),
       ),
     );
-
   }
 }
