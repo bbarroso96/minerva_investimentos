@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/widgets/homeCard.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({Key key}) : super(key: key);
+class HomeView extends StatelessWidget {
 
-  @override
-  _HomeViewState createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     Color mainColor = Colors.indigo[800];
@@ -103,10 +97,11 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
 
+      /*
       bottomNavigationBar: BottomNavigationBar(items: [
         BottomNavigationBarItem(icon: Icon(Icons.assessment),title: Text("Ativos")),
         BottomNavigationBarItem(icon: Icon(Icons.business), title: Text("Carteira"))]
-        ),
+        ),*/
     );
   }
 }

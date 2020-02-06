@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:minerva_investimentos/data/B3_data.dart';
 import 'package:minerva_investimentos/data/marketValue.dart';
 import 'package:minerva_investimentos/utils/router.dart';
 
@@ -41,7 +42,13 @@ class LogInView extends StatelessWidget {
                   //MarketValue ma = MarketValue();
                   //Response response = await ma.intradayValue("TGAR11");
                   //print(response.body.toString());
-                  Navigator.pushReplacementNamed(context, homeRoute);
+
+                  B3Data b3 = B3Data();
+                  Response response = await b3.listaFii();
+                  //print(response.body.toString());
+
+
+                  //Navigator.pushReplacementNamed(context, homeRoute);
                 },
               ),
             ],
