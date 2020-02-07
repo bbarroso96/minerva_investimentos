@@ -19,8 +19,22 @@ class B3Data
     String ecnodedBase64 =response.body.substring(1, (response.body.length -1));
     String decoded = utf8.decode(base64.decode(ecnodedBase64)); 
     
-     printWrapped(decoded);
+    printWrapped(decoded);
+
+    RegExp regExp = RegExp(
+      "<\/td><td><span class=\"dado-valores\">(.+)<\/span><\/td><td>"
+    );
+     
+      print("REGEX");
       
+      for (RegExpMatch item in regExp.allMatches(decoded).toList() ) {
+
+          print(
+            item.group(1)
+
+          );
+
+      }
      
 
     return http.get(_url);
