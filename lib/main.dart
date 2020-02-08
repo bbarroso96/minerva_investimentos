@@ -3,6 +3,37 @@ import 'package:minerva_investimentos/utils/router.dart';
 
 void main() => runApp(MyApp());
 
+
+/* 
+TODO:
+
+   -- shared_preferences para salvar PIN
+
+  -- Implementar PIN:
+      -- Salvar PIN caso não exisa um na memória (primiero login)
+      -- ALteração de PIN
+      -- Acesso com digital no lugar do PIN
+
+  
+  -- Implementar SQLite
+      -- Tabela para salvar a lista de ativos
+      -- Tabela para salvar cada importação da FNET sobre os dividendos
+
+
+  -- Implementar acesso a API da Alpha Vantage
+    -- Recupera dados intraday
+
+
+  OBS: onde salvar valor de abertura/fechamento do mercado?
+    -- Muito provavelmente com o prório ativo (Classe de "ASSET")
+
+*/
+
+
+
+
+
+
 class MyApp extends StatelessWidget {
  
   @override

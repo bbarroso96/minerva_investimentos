@@ -11,60 +11,68 @@ class LogInView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          child: Column(
-            children: <Widget>[
-              
-              Text("Digite a senha"),
-
-              TextFormField(
-                keyboardType: TextInputType.number,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  helperText: "Ou insira a digital",
-                ),
-
-                //autofocus: true,             //Define o campo como selecionado por default
-                autovalidate: true,           //Define autovalidação 
-                validator: (String value)     //Recupera o valor do campo para inserir a lógica de validação
-                {
-                  //if (value.trim().isEmpty) {
-                  //  return 'Password is required';
-                  //}
-                  if(value == "123"){
-                    return 'Ok';
-                  }
-
-                },
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.png"),
+            fit: BoxFit.cover,
+          )
+        ),
+        child: Center(
+          child: Padding(
+            child: Column(
+              children: <Widget>[
                 
-                onFieldSubmitted: (_)
-                async {
-                  //TODO: tirar market value daqui
-                  //MarketValue ma = MarketValue();
-                  //Response response = await ma.intradayValue("TGAR11");
-                  //print(response.body.toString());
+                Text("Digite a senha"),
 
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    helperText: "Ou insira a digital",
+                  ),
+
+                  //autofocus: true,             //Define o campo como selecionado por default
+                  autovalidate: true,           //Define autovalidação 
+                  validator: (String value)     //Recupera o valor do campo para inserir a lógica de validação
+                  {
+                    //if (value.trim().isEmpty) {
+                    //  return 'Password is required';
+                    //}
+                    if(value == "123"){
+                      return 'Ok';
+                    }
+
+                  },
                   
-                  
-                  AssetRepository a = AssetRepository();
-                  var b = a.listaAssets();
+                  onFieldSubmitted: (_)
+                  async {
+                    //TODO: tirar market value daqui
+                    //MarketValue ma = MarketValue();
+                    //Response response = await ma.intradayValue("TGAR11");
+                    //print(response.body.toString());
 
-                  FnetRepository c = FnetRepository();
-                  var d = c.fnetList();
+                    
+                    /*
+                    AssetRepository a = AssetRepository();
+                    var b = a.listaAssets();
+
+                    FnetRepository c = FnetRepository();
+                    var d = c.fnetList();
+                    */
 
 
+                    
 
-                  //print(response.body.toString());
 
-
-                  //Navigator.pushReplacementNamed(context, homeRoute);
-                },
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
+                  Navigator.pushReplacementNamed(context, homeRoute);
+                  },
+                ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            padding: EdgeInsets.all(50.0),
           ),
-          padding: EdgeInsets.all(50.0),
         ),
       ),
     );
