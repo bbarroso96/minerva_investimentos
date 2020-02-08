@@ -2,11 +2,34 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:minerva_investimentos/models/asset_model.dart';
 
 class B3Data
 {
+  ///Acessa o site da Bovespa e retorna a resposta
+  Future<String> acessaListaFiiBovespa() async 
+  {
+    try
+    {
+      String _url = "http://bvmf.bmfbovespa.com.br/Fundos-Listados/FundosListados.aspx?tipoFundo=imobiliario&Idioma=pt-br";
 
-  Future<http.Response> listaFii() async {
+      http.Response response = await http.get(_url);
+
+      return response.body;
+    }
+    catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    } 
+
+  }
+
+
+
+  
+
+  Future<http.Response> recuperaArquivoFNET() async {
     
   try
   {
@@ -45,6 +68,8 @@ class B3Data
   } 
 
   }
+
+
 
 void printWrapped(String text) {
   final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
