@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:minerva_investimentos/data/B3_data.dart';
 import 'package:minerva_investimentos/data/marketValue.dart';
 import 'package:minerva_investimentos/repository/asset_repository.dart';
+import 'package:minerva_investimentos/repository/fnet_repository.dart';
 import 'package:minerva_investimentos/utils/router.dart';
 
 class LogInView extends StatelessWidget {
@@ -49,7 +50,8 @@ class LogInView extends StatelessWidget {
                   AssetRepository a = AssetRepository();
                   var b = a.listaAssets();
 
-
+                  FnetRepository c = FnetRepository();
+                  var d = c.fnetList();
 
 
 

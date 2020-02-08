@@ -28,8 +28,33 @@ class B3Data
 
 
   
+  ///Acessa "aviso aos cotistas" do FNET
+  Future<String> fetchFnetDocument(String url) async
+  {
+    try
+    {
+      //!!! recebe valor padrao para teste
+      url = "http://fnet.bmfbovespa.com.br/fnet/publico/exibirDocumento?id=79225";
 
-  Future<http.Response> recuperaArquivoFNET() async {
+      http.Response response = await http.get(url);
+
+
+      //Decodifica dados da base64 pata string
+      String ecnodedBase64 =response.body.substring(1, (response.body.length -1));
+      String decoded = utf8.decode(base64.decode(ecnodedBase64)); 
+
+       return decoded;
+    }
+    catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    } 
+
+  }
+  
+  
+  Future<http.Response> recuperaArquivoFnet() async {
     
   try
   {
@@ -48,7 +73,6 @@ class B3Data
       "<\/td><td><span class=\"dado-valores\">(.+)<\/span><\/td><td>"
     );
      
-      print("REGEX");
       
       for (RegExpMatch item in regExp.allMatches(decoded).toList() ) {
 
@@ -75,5 +99,8 @@ void printWrapped(String text) {
   final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
+
+
+
 
 }
