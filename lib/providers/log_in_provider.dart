@@ -2,7 +2,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:minerva_investimentos/data/db_data.dart';
 import 'package:minerva_investimentos/data/local_data.dart';
+import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/utils/router.dart';
 import 'package:path/path.dart';
 
@@ -48,7 +50,7 @@ class LogInProvider extends ChangeNotifier
 
 
  //Altera visibilidade do campo de senha
- void toggleObscurePassword() {
+ Future<void> toggleObscurePassword() async {
     _obscurePassword ^= true;
 
     if(_obscurePassword == true)
@@ -60,6 +62,40 @@ class LogInProvider extends ChangeNotifier
       _obscurePasswordIcon = Icon(Icons.visibility);
     }
     notifyListeners();
+
+          //TODO: implementação da lógica de armazear os ativos
+          
+          BdData bd = BdData();
+
+          B3Asset asset = B3Asset();
+
+          asset.name = "Fundo novo";
+          asset.ticker = "EFGH";
+          asset.fund = "Fundo novo";
+
+        List<B3Asset> listAsset = List<B3Asset>();
+        listAsset.add(asset);
+        listAsset.add(asset);
+
+          //var b = await bd.createCustomer(listAsset);
+          Future.delayed(Duration(milliseconds: 3000));
+         var a = await bd.getCustomers();
+
+        int i = 0;
+        for (var item in a) {
+          print(a[i]);
+          i++;
+        }
+         
+
+
+
+
+
+
+
+
+
   }
 
   void submitLogIn(BuildContext context) async {

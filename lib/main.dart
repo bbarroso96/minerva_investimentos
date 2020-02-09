@@ -10,9 +10,15 @@ TODO:
    -- shared_preferences para salvar PIN
 
   -- Implementar PIN:
+  -- Alteração de PIN
+  -- Acesso com digital no lugar do PIN
+
+  --OK:
       -- Salvar PIN caso não exisa um na memória (primiero login)
-      -- ALteração de PIN
-      -- Acesso com digital no lugar do PIN
+      -- Recuperar PIN e autenticar usuário
+      -- Esconder/Mostrar campo de senha
+      
+      
 
   
   -- Implementar SQLite

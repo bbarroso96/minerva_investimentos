@@ -1,32 +1,55 @@
 
 
 
+import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BdData
 {
 
-  dynamic db() async
+//Cria o banco de dados
+Future<Database> createDatabase() async {
+  String databasesPath = await getDatabasesPath();
+  String dbPath = join(databasesPath, 'minerva_investimentos.db');
+
+  Database database = await openDatabase(dbPath, version: 1, onCreate: populateDb);
+  return database;
+}
+
+void populateDb(Database database, int version) async {
+  await database.execute("CREATE TABLE asset ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "name TEXT,"
+          "ticker TEXT,"
+          "fund TEXT"
+          ")");
+}
+
+Future<List<int>> createCustomer(List<B3Asset> asset) async {
+  Database db = await createDatabase();
+
+  List<int> result = List<int>();
+
+  for (B3Asset isertObject in asset)
   {
-   
-   final Future<Database> database = openDatabase(
-  // Set the path to the database.
-  join(await getDatabasesPath(), 'doggie_database.db'),
-  // When the database is first created, create a table to store dogs.
-  onCreate: (db, version) {
-    // Run the CREATE TABLE statement on the database.
-    return db.execute(
-      "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)",
-    );
-  },
-  // Set the version. This executes the onCreate function and provides a
-  // path to perform database upgrades and downgrades.
-  version: 1,
-);
-
-
+     result.add( await db.insert("asset", isertObject.toMap()) );
   }
+ 
 
+  db.close();
+  return result;
+}
+
+Future<List> getCustomers() async {
+
+  Database db = await createDatabase();
+
+  var result = await db.query("asset", columns: ["id", "name", "ticker", "fund"]);
+
+  db.close();
+
+  return result.toList();
+}
 
 }

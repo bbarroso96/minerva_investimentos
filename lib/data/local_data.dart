@@ -38,6 +38,7 @@ class LocalData
 
   }
 
+  //Deleta a senha do usuário na memória
   void deleteUserPin() async
   {
     SharedPreferences prefs = await SharedPreferences.getInstance();
