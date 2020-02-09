@@ -33,8 +33,12 @@ class LogInView extends StatelessWidget {
 
                       obscureText: provider.obscurePassword,
 
-                      decoration: const InputDecoration(
-                        helperText: "Digite a senha ou insira a digital",
+                      decoration: InputDecoration(
+                        counter: GestureDetector(
+                          child: provider.obscurePasswordIcon,
+                          onTap: () => provider.toggleObscurePassword()
+                        ),
+                        helperText: provider.desciption,
                       ),
 
                       //autofocus: true,             //Define o campo como selecionado por default
