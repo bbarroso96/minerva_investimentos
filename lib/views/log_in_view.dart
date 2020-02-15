@@ -25,51 +25,45 @@ class LogInView extends StatelessWidget {
             builder: (context, provider, _){
               return Center(
               child: Padding(
-                child: Column(
-                  children: <Widget>[
-                    //Text("Digite a senha"),
-                    TextFormField(
-                      keyboardType: TextInputType.number,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
 
-                      obscureText: provider.obscurePassword,
+                  obscureText: provider.obscurePassword,
 
-                      decoration: InputDecoration(
-                        counter: GestureDetector(
-                          child: provider.obscurePasswordIcon,
-                          onTap: () => provider.toggleObscurePassword()
-                        ),
-                        helperText: provider.desciption,
-                      ),
-
-                      //autofocus: true,             //Define o campo como selecionado por default
-                      autovalidate: true, //Define autovalidação
-                      validator: (String password)
-                      {
-                        provider.password = password;
-                      },
-                     
-
-                      onFieldSubmitted: (_) async {
-                        //TODO: tirar market value daqui
-                        //MarketValue ma = MarketValue();
-                        //Response response = await ma.intradayValue("TGAR11");
-                        //print(response.body.toString());
-
-                        /*
-                        AssetRepository a = AssetRepository();
-                        var b = a.listaAssets();
-
-                        FnetRepository c = FnetRepository();
-                        var d = c.fnetList();
-                        */
-                        provider.submitLogIn(context);
-
-                        provider.toggleObscurePassword();
-                        //Navigator.pushReplacementNamed(context, homeRoute);
-                      },
+                  decoration: InputDecoration(
+                    counter: GestureDetector(
+                      child: provider.obscurePasswordIcon,
+                      onTap: () => provider.toggleObscurePassword()
                     ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
+                    helperText: provider.desciption,
+                  ),
+
+                  //autofocus: true,             //Define o campo como selecionado por default
+                  autovalidate: true, //Define autovalidação
+                  validator: (String password)
+                  {
+                    provider.password = password;
+                  },
+                 
+
+                  onFieldSubmitted: (_) async {
+                    //TODO: tirar market value daqui
+                    //MarketValue ma = MarketValue();
+                    //Response response = await ma.intradayValue("TGAR11");
+                    //print(response.body.toString());
+
+                    /*
+                    AssetRepository a = AssetRepository();
+                    var b = a.listaAssets();
+
+                    FnetRepository c = FnetRepository();
+                    var d = c.fnetList();
+                    */
+                    provider.submitLogIn(context);
+
+                    provider.toggleObscurePassword();
+                    //Navigator.pushReplacementNamed(context, homeRoute);
+                  },
                 ),
                 padding: EdgeInsets.all(50.0),
               ),

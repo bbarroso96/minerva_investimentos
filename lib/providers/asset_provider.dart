@@ -7,10 +7,9 @@ import 'package:minerva_investimentos/data/db_data.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/utils/functions.dart';
 
-class AssetProvider extends ChangeNotifier
+class AssetProvider
 {
     List<B3Asset> _assetList;
-
 
     AssetProvider()
     {
@@ -50,7 +49,7 @@ class AssetProvider extends ChangeNotifier
         //Preenche retorna aos consumidores a lista de ativos
         //TODO: lógica para inserir apenas os ativos novos e depois retornar alista completa
         _assetList = assetListFromRegex;
-        notifyListeners();
+       // notifyListeners();
 
         //Salva no bd a lista de ativos
         var b = await bd.insertAssetList(assetListFromRegex);
@@ -65,9 +64,10 @@ class AssetProvider extends ChangeNotifier
           print(a[i]);
           i++;
         }
-
-        //TODO: salvar na meoria 
       }
+
+
+      
 
     }
 
