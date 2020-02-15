@@ -10,9 +10,9 @@ class Functions
 {
   ///Recebe uma string e aplica ReGex para procurar a lista de Fii
   ///Retorna lista de Assets
-  List<Asset> regexAssetList(String dado) 
+  List<B3Asset> regexAssetList(String data) 
   {
-    List<Asset> listaAsset = List<Asset>();
+    List<B3Asset> assetList = List<B3Asset>();
   
     //Define ReGex a ser utilizado para recuperar o ticker
     RegExp regexTicker = RegExp(
@@ -24,21 +24,21 @@ class Functions
       "aba=abaPrincipal\">(.+)<\/a>"
     );
 
-    List<RegExpMatch> nomeFundo = regexNameFund.allMatches(dado).toList();
+    List<RegExpMatch> nomeFundo = regexNameFund.allMatches(data).toList();
     int i = 0;
     
-    for (RegExpMatch ticker in regexTicker.allMatches(dado).toList()) {
-      Asset asset = Asset();
+    for (RegExpMatch ticker in regexTicker.allMatches(data).toList()) {
+      B3Asset asset = B3Asset();
 
       asset.ticker = ticker.group(1);
-      asset.nome = nomeFundo[i].group(1);
-      asset.fundo = nomeFundo[i+1].group(1);
+      asset.name = nomeFundo[i].group(1);
+      asset.fund = nomeFundo[i+1].group(1);
 
       i+= 2; //Incremento de +2 pq o segundo regex revolve as duas informações concomitantemente
-      listaAsset.add(asset);
+      assetList.add(asset);
     }
 
-    return listaAsset;
+    return assetList;
 
   }
 

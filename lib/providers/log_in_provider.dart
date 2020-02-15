@@ -21,7 +21,8 @@ class LogInProvider extends ChangeNotifier
 
   Icon _obscurePasswordIcon;
 
-  LogInProvider() {
+  LogInProvider()
+  {
     _obscurePassword = true;
 
     _obscurePasswordIcon = Icon(Icons.visibility_off);
@@ -62,39 +63,6 @@ class LogInProvider extends ChangeNotifier
       _obscurePasswordIcon = Icon(Icons.visibility);
     }
     notifyListeners();
-
-          //TODO: implementação da lógica de armazear os ativos
-          
-          BdData bd = BdData();
-
-          B3Asset asset = B3Asset();
-
-          asset.name = "Fundo novo";
-          asset.ticker = "EFGH";
-          asset.fund = "Fundo novo";
-
-        List<B3Asset> listAsset = List<B3Asset>();
-        listAsset.add(asset);
-        listAsset.add(asset);
-
-          //var b = await bd.createCustomer(listAsset);
-          Future.delayed(Duration(milliseconds: 3000));
-         var a = await bd.getCustomers();
-
-        int i = 0;
-        for (var item in a) {
-          print(a[i]);
-          i++;
-        }
-         
-
-
-
-
-
-
-
-
 
   }
 

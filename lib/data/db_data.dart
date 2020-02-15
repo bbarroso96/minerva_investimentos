@@ -41,6 +41,33 @@ Future<List<int>> createCustomer(List<B3Asset> asset) async {
   return result;
 }
 
+Future<List<int>> insertAssetList(List<B3Asset> asset) async {
+  Database db = await createDatabase();
+
+  List<int> result = List<int>();
+
+  for (B3Asset isertObject in asset)
+  {
+     result.add( await db.insert("asset", isertObject.toMap()) );
+  }
+ 
+
+  db.close();
+  return result;
+}
+
+Future<List> queryAssetTable() async {
+
+  Database db = await createDatabase();
+
+  var result = await db.query("asset", columns: ["id", "name", "ticker", "fund"]);
+
+  db.close();
+
+  return result.toList();
+}
+
+
 Future<List> getCustomers() async {
 
   Database db = await createDatabase();

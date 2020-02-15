@@ -17,11 +17,11 @@ class AssetRepository
     String response = await b3.acessaListaFiiBovespa();
 
     //Aplica regex no HTML e recupera lista de Assets
-    List<Asset> a = functions.regexAssetList(response);                  
+    List<B3Asset> a = functions.regexAssetList(response);                  
 
-    for (Asset ativo in a) 
+    for (B3Asset ativo in a) 
     {
-      print(ativo.ticker+"  "+ativo.nome+"  "+ativo.fundo); 
+      print(ativo.ticker+"  "+ativo.name+"  "+ativo.fund); 
     }
     
   }

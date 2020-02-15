@@ -6,6 +6,28 @@ import 'package:minerva_investimentos/models/asset_model.dart';
 
 class B3Data
 {
+
+  ///Acessa o site da Bovespa e retorna a resposta
+  Future<String> getFiiListFromB3() async 
+  {
+    try
+    {
+      String _url = "http://bvmf.bmfbovespa.com.br/Fundos-Listados/FundosListados.aspx?tipoFundo=imobiliario&Idioma=pt-br";
+
+      http.Response response = await http.get(_url);
+
+      return response.body;
+    }
+    catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    } 
+  }
+  
+
+
+
   ///Acessa o site da Bovespa e retorna a resposta
   Future<String> acessaListaFiiBovespa() async 
   {

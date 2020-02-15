@@ -16,7 +16,7 @@ class FnetRepository
     //Acessa site FNET e recupera corpo do HTML
     String response = await b3.fetchFnetDocument("dummy");
 
-     //Aplica regex no HTML e recupera lista de Assets
+    //Aplica regex no HTML e recupera lista de Assets
     FNET a = functions.regexFnetList(response);                  
 
     print(a.infoDate); 

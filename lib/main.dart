@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:minerva_investimentos/providers/asset_provider.dart';
 import 'package:minerva_investimentos/utils/router.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,14 +46,20 @@ class MyApp extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-       
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: 
+      [
+        ChangeNotifierProvider<AssetProvider>(create: (_) => AssetProvider(),)
+      ],
+        child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+         
+          primarySwatch: Colors.blue,
+        ),
+        onGenerateRoute: Router.generateRoute,
+        initialRoute: loginRoute,
       ),
-      onGenerateRoute: Router.generateRoute,
-      initialRoute: loginRoute,
     );
   }
 }
