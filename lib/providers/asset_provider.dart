@@ -26,7 +26,7 @@ class AssetProvider
       var bdAssetList = await bd.queryAssetTable();
 
       //Caso exista dados no bd segue para o processamento
-      if(bdAssetList != null)
+      if(bdAssetList != null && bdAssetList.length != 0)
       {
         var a = await bd.queryAssetTable();
 

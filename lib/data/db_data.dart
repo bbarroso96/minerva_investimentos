@@ -11,7 +11,7 @@ class BdData
 //Cria o banco de dados
 Future<Database> createDatabase() async {
   String databasesPath = await getDatabasesPath();
-  String dbPath = join(databasesPath, 'minerva_investimentos.db');
+  String dbPath = join(databasesPath, 'minerva_investimentos_1.db');
 
   Database database = await openDatabase(dbPath, version: 1, onCreate: populateDb);
   return database;
@@ -23,6 +23,12 @@ void populateDb(Database database, int version) async {
           "name TEXT,"
           "ticker TEXT,"
           "fund TEXT"
+          ")");
+
+  await database.execute("CREATE TABLE portfolio ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "ticker TEXT,"
+          "amount INT"
           ")");
 }
 
@@ -78,5 +84,57 @@ Future<List> getCustomers() async {
 
   return result.toList();
 }
+
+/*
+     Portfolio
+*/
+Future<List<int>> insertPortfolioAsset(PortfolioAsset asset) async {
+  Database db = await createDatabase();
+
+  List<int> result = List<int>();
+
+  result.add( await db.insert("portfolio", asset.toMap()) );
+ 
+  await db.close();
+  return result;
+}
+
+Future<List<Map<String, dynamic>>> queryPortfolioTable() async 
+{
+  try
+  {
+    Database db = await createDatabase();
+
+  var result = await db.query("portfolio", columns: ["id", "ticker", "amount"]);
+  
+  await db.close();
+
+  return result.toList();
+  }
+  catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    }
+}
+
+  Future<int> removeFromPortfolioTable(String ticker) async
+  {
+     try
+    {
+      Database db = await createDatabase();
+
+      int i = await db.delete("portfolio", where:'ticker = ?', whereArgs: [ticker]);
+
+      await db.close();
+
+      return i;
+    }
+    catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    }
+  }
 
 }

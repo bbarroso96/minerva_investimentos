@@ -27,6 +27,8 @@ class HomeView extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.plus_one),
                     onPressed: () {
+                      //DEBUG testando delete
+                      //provider.removeAsset('ticker');
                       _settingModalBottomSheet(context, provider);
                     },
                   )

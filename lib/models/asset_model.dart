@@ -39,6 +39,30 @@ class B3Asset
         "ticker": ticker,
         "fund": fund
     };
+}
 
 
+
+class PortfolioAsset
+{
+  String ticker;
+  int amount;
+
+  PortfolioAsset({
+    this.ticker,
+    this.amount
+  });
+
+  String get assetTicker => ticker;
+  int get assetAmount => amount;
+
+  factory PortfolioAsset.fromJson(Map<String, dynamic> data) => PortfolioAsset(
+    ticker: data["ticker"],
+    amount: data["amount"]
+  );
+
+   Map<String, dynamic> toMap() => {
+        "ticker": ticker,
+        "amount": amount
+    };
 }
