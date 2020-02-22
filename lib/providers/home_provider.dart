@@ -13,6 +13,7 @@ class HomeProvider extends ChangeNotifier
   List<PortfolioAsset> _portfolioList = List<PortfolioAsset>();
 
   String _enteredAsset;
+  String _enteredAmount;
 
   //TODO: implementar lógica da lista de ativos
   List<B3Asset> _b3AssetList = List<B3Asset>();
@@ -45,7 +46,9 @@ class HomeProvider extends ChangeNotifier
   //Adiciona o ativo escolhida a lista de ativos
   void submitAsset() async
   {
+  print('Submit asset: ');
    print(_enteredAsset); 
+   print(_enteredAmount);
    _homeCardList.add( HomeCardWidget(
                       ativo: Text(_enteredAsset),
                       cotacao: Text("12,50"),
@@ -56,7 +59,7 @@ class HomeProvider extends ChangeNotifier
     //Adiciona o ativo ao portifólio
     PortfolioAsset portfolioAsset = PortfolioAsset();
     portfolioAsset.ticker = _enteredAsset;
-    portfolioAsset.amount = _homeCardList.length;
+    portfolioAsset.amount = int.parse(_enteredAmount);
     portfolioProvider.addToPortfolio(portfolioAsset);
   }
 
@@ -70,6 +73,9 @@ class HomeProvider extends ChangeNotifier
 
    String get enteredAsset => _enteredAsset;
    void set enteredAsset(String asset)=> _enteredAsset = asset;
+
+   String get enteredAmount => _enteredAmount;
+   void set enteredAmount(String amount)=> _enteredAmount = amount;
 
    List<HomeCardWidget> get homeCardWidgetList => _homeCardList;
    int get homeCardListLength => _homeCardListLength;

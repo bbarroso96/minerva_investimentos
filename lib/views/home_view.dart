@@ -52,7 +52,7 @@ class HomeView extends StatelessWidget {
               itemBuilder: (context, int index) {
                 return Dismissible(
                   child: provider.homeCardWidgetList[index],
-                  
+
                   //Swipe para a direita (CONFIG)
                   background: Card(
                     color: Colors.blueGrey,
@@ -152,18 +152,49 @@ class HomeView extends StatelessWidget {
                   flex: 1,
                   child: Container(
                     padding: EdgeInsets.all(20),
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.characters,
-                      obscureText: false,
-                      autovalidate: true, //Define autovalidação
-                      validator: (String asset) {
-                        provider.enteredAsset = asset.toUpperCase();
-                      },
+                    child: Row(
+                      children: <Widget>[
+                        //Imput ativo
+                        Flexible(
+                          flex: 4,
+                            child: TextFormField(     
+                              decoration: InputDecoration(helperText: 'Ativo'),                      
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.characters,
+                              obscureText: false,
+                              autovalidate: true, //Define autovalidação
+                              validator: (String asset) {
+                              provider.enteredAsset = asset.toUpperCase();
+                            },
+                          ),
+                        ),
 
-                      onFieldSubmitted: (_) {
-                        provider.submitAsset();
-                      },
+                     SizedBox(width: 10,),
+
+                        //Imput qtd
+                        Flexible(
+                          flex: 1,
+                            child: TextFormField(
+                              decoration: InputDecoration(helperText: 'Qtd'),
+                              keyboardType: TextInputType.number,
+                              obscureText: false,
+                              autovalidate: true, //Define autovalidação
+                              validator: (String amout) {
+                              provider.enteredAmount = amout;
+                            },
+                            
+                          ),
+                        ),
+                        
+                        Flexible (
+                          flex: 1,
+                          child: IconButton(
+                            icon: Icon(Icons.check),
+                            onPressed: (){provider.submitAsset();}
+                          )
+                        )
+
+                      ],
                     ),
                   ),
                 ),
