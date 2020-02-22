@@ -60,10 +60,12 @@ class HomeProvider extends ChangeNotifier
     portfolioProvider.addToPortfolio(portfolioAsset);
   }
 
-  void removeAsset(String ticker)
+  void removeAsset(HomeCardWidget removeItem)
   {
-    
-    portfolioProvider.removeAssetFromPorfolio(ticker);
+    _homeCardList.remove(removeItem);
+    _homeCardListLength = _homeCardList.length;
+    notifyListeners();
+    portfolioProvider.removeAssetFromPorfolio(removeItem.ativo.data);
   }
 
    String get enteredAsset => _enteredAsset;
