@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:minerva_investimentos/models/asset_model.dart';
 
 class HomeCardWidget extends StatelessWidget {
-  const HomeCardWidget({Key key, this.ativo, this.cotacao, this.dividendo})
+  const HomeCardWidget({Key key, this.portfolioAsset})
       : super(key: key);
 
-  final Text ativo;
-  final Text cotacao;
-  final Text dividendo;
+final PortfolioAsset portfolioAsset;
 
   @override
   Widget build(BuildContext context) {
+ Text ativo = Text(portfolioAsset.assetTicker);
+   Text cotacao = Text(portfolioAsset.assetAmount.toString());
+   Text dividendo = Text('123');
+
     return Card(
       margin: const EdgeInsets.only(top: 4.0, bottom: 4.0),
       color: Colors.white,

@@ -137,4 +137,23 @@ Future<List<Map<String, dynamic>>> queryPortfolioTable() async
     }
   }
 
+  Future<int> editFromPortfolioTable(PortfolioAsset asset) async
+  {
+     try
+    {
+      Database db = await createDatabase();
+
+      int i = await db.update("portfolio",  asset.toMap(), where:'ticker = ?', whereArgs: [asset.ticker]);
+
+      await db.close();
+
+      return i;
+    }
+    catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    }
+  }
+
 }

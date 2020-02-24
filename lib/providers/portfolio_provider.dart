@@ -67,5 +67,13 @@ class PortfolioProvider
 
     return i;
   }
+
+   //Remove ativo do portifólio
+  Future<int> editAssetFromPorfolio(PortfolioAsset asset) async
+  {
+    int i = await bd.editFromPortfolioTable(asset);
+
+    return i;
+  }
      
 }

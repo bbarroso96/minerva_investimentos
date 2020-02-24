@@ -74,7 +74,7 @@ class HomeView extends StatelessWidget {
                   ),
 
                   //A key do card é o próprio nome do ativo
-                  key: ValueKey(provider.homeCardWidgetList[index].ativo),
+                  key: ValueKey(provider.homeCardWidgetList[index].portfolioAsset.ticker),
 
                   confirmDismiss: (direction) async {
                     //Swipe deletando
@@ -85,6 +85,11 @@ class HomeView extends StatelessWidget {
                     }
                     //Swipe config
                     else {
+                      _settingModalBottomSheetEdit(
+                        context, 
+                        provider,
+                        index
+                       );
                       return false;
                     }
                   },
@@ -93,7 +98,7 @@ class HomeView extends StatelessWidget {
                     //Remove do portifólio o ativo quando o swipe for pra esqueda
                     if (direction == DismissDirection.endToStart) {
                       print('Deletando do portifolio: ' +
-                          provider.homeCardWidgetList[index].ativo.data);
+                          provider.homeCardWidgetList[index].portfolioAsset.ticker);
                       provider.removeAsset(provider.homeCardWidgetList[index]);
                     }
                   },
@@ -162,10 +167,7 @@ class HomeView extends StatelessWidget {
                               keyboardType: TextInputType.text,
                               textCapitalization: TextCapitalization.characters,
                               obscureText: false,
-                              autovalidate: true, //Define autovalidação
-                              validator: (String asset) {
-                              provider.enteredAsset = asset.toUpperCase();
-                            },
+                              autovalidate: true, //Define autovalidação                              
                           ),
                         ),
 
@@ -190,7 +192,7 @@ class HomeView extends StatelessWidget {
                           flex: 1,
                           child: IconButton(
                             icon: Icon(Icons.check),
-                            onPressed: (){provider.submitAsset();}
+                            onPressed: (){provider.submitAsset(); Navigator.pop(context);}
                           )
                         )
 
@@ -202,5 +204,70 @@ class HomeView extends StatelessWidget {
             ),
           );
         });
-  }
+      }
+       void _settingModalBottomSheetEdit(context, HomeProvider provider, int index) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: Column(
+              children: <Widget>[
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Row(
+                      children: <Widget>[
+                        //Imput ativo
+                        Flexible(
+                          flex: 4,
+                            child: TextFormField( 
+                              enabled: false,
+                              initialValue: provider.homeCardWidgetList[index].portfolioAsset.ticker,    
+                              decoration: InputDecoration(helperText: 'Ativo'),                      
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.characters,
+                              obscureText: false,
+                              autovalidate: true, //Define autovalidação
+                              validator: (String asset) {
+                              provider.enteredAsset = asset.toUpperCase();
+                            },
+                          ),
+                        ),
+
+                     SizedBox(width: 10,),
+
+                        //Imput qtd
+                        Flexible(
+                          flex: 1,
+                            child: TextFormField(
+                              initialValue: provider.homeCardWidgetList[index].portfolioAsset.amount.toString(),
+                              decoration: InputDecoration(helperText: 'Qtd'),
+                              keyboardType: TextInputType.number,
+                              obscureText: false,
+                              autovalidate: true, //Define autovalidação
+                              validator: (String amout) {
+                              provider.enteredAmount = amout;
+                            },
+                            
+                          ),
+                        ),
+                        
+                        Flexible (
+                          flex: 1,
+                          child: IconButton(
+                            icon: Icon(Icons.check),
+                            onPressed: (){provider.editAsset(index); Navigator.pop(context);}
+                          )
+                        )
+
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });}
+
 }

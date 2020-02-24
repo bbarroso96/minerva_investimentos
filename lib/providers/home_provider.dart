@@ -34,10 +34,7 @@ class HomeProvider extends ChangeNotifier
     //Popula a lista de ativos da home
     for (PortfolioAsset asset in _portfolioList)
     {
-     _homeCardList.add( HomeCardWidget(
-                      ativo: Text(asset.ticker),
-                      cotacao: Text(asset.amount.toString()),
-                      dividendo: Text(asset.amount.toString())));
+     _homeCardList.add( HomeCardWidget(portfolioAsset: asset));
     }
     _homeCardListLength = _homeCardList.length;
     notifyListeners();
@@ -46,20 +43,21 @@ class HomeProvider extends ChangeNotifier
   //Adiciona o ativo escolhida a lista de ativos
   void submitAsset() async
   {
-  print('Submit asset: ');
-   print(_enteredAsset); 
-   print(_enteredAmount);
-   _homeCardList.add( HomeCardWidget(
-                      ativo: Text(_enteredAsset),
-                      cotacao: Text("12,50"),
-                      dividendo: Text("0,50")));
+    print('Submit asset: ');
+    print(_enteredAsset); 
+    print(_enteredAmount);
+
+    //Constroi o ativo novo
+    PortfolioAsset portfolioAsset = PortfolioAsset();
+    portfolioAsset.ticker = _enteredAsset;
+    portfolioAsset.amount = int.parse(_enteredAmount);
+
+    //Adicona a lista de ativos da home
+    _homeCardList.add( HomeCardWidget(portfolioAsset: portfolioAsset));
     _homeCardListLength = _homeCardList.length;
     notifyListeners();
 
     //Adiciona o ativo ao portifólio
-    PortfolioAsset portfolioAsset = PortfolioAsset();
-    portfolioAsset.ticker = _enteredAsset;
-    portfolioAsset.amount = int.parse(_enteredAmount);
     portfolioProvider.addToPortfolio(portfolioAsset);
   }
 
@@ -68,7 +66,24 @@ class HomeProvider extends ChangeNotifier
     _homeCardList.remove(removeItem);
     _homeCardListLength = _homeCardList.length;
     notifyListeners();
-    portfolioProvider.removeAssetFromPorfolio(removeItem.ativo.data);
+    portfolioProvider.removeAssetFromPorfolio(removeItem.portfolioAsset.ticker);
+  }
+
+  void editAsset(int editIndex)
+  {
+    print('Edit asset: ');
+    print(homeCardWidgetList[editIndex].portfolioAsset.ticker.toString()); 
+    print(_enteredAmount);
+
+    //Constroi o ativo novo
+    PortfolioAsset portfolioAsset = PortfolioAsset();
+    portfolioAsset.ticker = homeCardWidgetList[editIndex].portfolioAsset.ticker;
+    portfolioAsset.amount = int.parse(_enteredAmount);
+
+    _homeCardList[editIndex] = HomeCardWidget(portfolioAsset: portfolioAsset);
+    notifyListeners();
+
+    portfolioProvider.editAssetFromPorfolio(portfolioAsset);
   }
 
    String get enteredAsset => _enteredAsset;
