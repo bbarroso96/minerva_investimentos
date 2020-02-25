@@ -12,7 +12,7 @@ class LogInView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LogInProvider>(
-      create: (_) => LogInProvider(),
+      create: (_) => LogInProvider(context: context),
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -59,7 +59,7 @@ class LogInView extends StatelessWidget {
                     FnetRepository c = FnetRepository();
                     var d = c.fnetList();
                     */
-                    provider.submitLogIn(context);
+                    provider.submitLogIn();
 
                     provider.toggleObscurePassword();
                     //Navigator.pushReplacementNamed(context, homeRoute);

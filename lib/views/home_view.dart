@@ -167,7 +167,10 @@ class HomeView extends StatelessWidget {
                               keyboardType: TextInputType.text,
                               textCapitalization: TextCapitalization.characters,
                               obscureText: false,
-                              autovalidate: true, //Define autovalidação                              
+                              autovalidate: true, //Define autovalidação   
+                              validator: (String asset) {
+                              provider.enteredAsset = asset.toUpperCase();
+                            },                           
                           ),
                         ),
 
@@ -228,10 +231,7 @@ class HomeView extends StatelessWidget {
                               keyboardType: TextInputType.text,
                               textCapitalization: TextCapitalization.characters,
                               obscureText: false,
-                              autovalidate: true, //Define autovalidação
-                              validator: (String asset) {
-                              provider.enteredAsset = asset.toUpperCase();
-                            },
+                              autovalidate: true, //Define autovalidação                              
                           ),
                         ),
 

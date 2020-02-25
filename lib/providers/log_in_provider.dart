@@ -2,6 +2,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/auth_strings.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:minerva_investimentos/data/db_data.dart';
 import 'package:minerva_investimentos/data/local_data.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
@@ -21,7 +23,9 @@ class LogInProvider extends ChangeNotifier
 
   Icon _obscurePasswordIcon;
 
-  LogInProvider()
+  final BuildContext context;
+
+  LogInProvider({this.context})
   {
     _obscurePassword = true;
 
@@ -39,14 +43,17 @@ class LogInProvider extends ChangeNotifier
     if(_password != null)
     {
       _description =  "Insira o PIN ou entre com a digital";
+
+      //Verifica digital apenas se já houver uma senha cadastrada
+      LocalAuthentication localAuth = LocalAuthentication();
+      List<BiometricType> availableBiometrics = await localAuth.getAvailableBiometrics();    
+      if(availableBiometrics.contains(BiometricType.fingerprint) ){biometricsLogin();}
     }
     else
     {
       _description = "Por favor cadastre um PIN";
     }
     notifyListeners();  
-
-
   } 
 
 
@@ -63,10 +70,38 @@ class LogInProvider extends ChangeNotifier
       _obscurePasswordIcon = Icon(Icons.visibility);
     }
     notifyListeners();
-
   }
 
-  void submitLogIn(BuildContext context) async {
+  void biometricsLogin() async {
+    try
+    {
+      var localAuth = new LocalAuthentication();
+
+      bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+      localizedReason: 'Please authenticate yourself', useErrorDialogs: false
+      );
+
+      if(didAuthenticate)
+      {
+        print('Autenticado');
+        Navigator.pushReplacementNamed(context, homeRoute);
+      }
+
+      else
+      {
+        print('Não autenticado');
+        _description = "Digital não reconhecida";
+        notifyListeners();
+      }
+    }
+    catch(e) 
+    {
+      print(e.toString());
+    
+    }
+  }
+
+  void submitLogIn() async {
    
     //Caso não exista uma senha cadastrada
     //Salva a senha inserida
