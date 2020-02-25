@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/auth_strings.dart';
@@ -10,14 +8,17 @@ import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/utils/router.dart';
 import 'package:path/path.dart';
 
-class LogInProvider extends ChangeNotifier
-{
+class LogInProvider extends ChangeNotifier {
   bool _obscurePassword;
 
   String _password;
   String _enteredPassword;
+  String _newPassword;
 
   String _description;
+
+  bool _firstLogin;
+  bool _isChangePassword;
 
   LocalData _localData = LocalData();
 
@@ -25,112 +26,160 @@ class LogInProvider extends ChangeNotifier
 
   final BuildContext context;
 
-  LogInProvider({this.context})
-  {
+  LogInProvider({this.context}) {
     _obscurePassword = true;
 
     _obscurePasswordIcon = Icon(Icons.visibility_off);
 
     _init();
-    
   }
 
-  void _init()  async 
-  {
+  void _init() async {
     _password = await _localData.getUserPin();
 
+    _isChangePassword = false;
+
     //Caso já exista uma senha cadastrada
-    if(_password != null)
-    {
-      _description =  "Insira o PIN ou entre com a digital";
+    if (_password != null) {
+      _description = "Insira o PIN ou entre com a digital";
+      _firstLogin = false;
 
-      //Verifica digital apenas se já houver uma senha cadastrada
-      LocalAuthentication localAuth = LocalAuthentication();
-      List<BiometricType> availableBiometrics = await localAuth.getAvailableBiometrics();    
-      if(availableBiometrics.contains(BiometricType.fingerprint) ){biometricsLogin();}
-    }
-    else
-    {
+    } else {
       _description = "Por favor cadastre um PIN";
+      _firstLogin = true;
     }
-    notifyListeners();  
-  } 
 
+    notifyListeners();
+  }
 
- //Altera visibilidade do campo de senha
- Future<void> toggleObscurePassword() async {
+  //Altera visibilidade do campo de senha
+  Future<void> toggleObscurePassword() async {
     _obscurePassword ^= true;
 
-    if(_obscurePassword == true)
-    {
+    if (_obscurePassword == true) {
       _obscurePasswordIcon = Icon(Icons.visibility_off);
-    }
-    else
-    {
+    } else {
       _obscurePasswordIcon = Icon(Icons.visibility);
     }
     notifyListeners();
   }
 
   void biometricsLogin() async {
-    try
-    {
-      var localAuth = new LocalAuthentication();
 
-      bool didAuthenticate = await localAuth.authenticateWithBiometrics(
-      localizedReason: 'Please authenticate yourself', useErrorDialogs: false
-      );
+    //Verifica digital apenas se já houver uma senha cadastrada
+    LocalAuthentication localAuth = LocalAuthentication();
+    List<BiometricType> availableBiometrics =  await localAuth.getAvailableBiometrics();
 
-      if(didAuthenticate)
-      {
-        print('Autenticado');
-        Navigator.pushReplacementNamed(context, homeRoute);
+    if (availableBiometrics.contains(BiometricType.fingerprint)) {
+      try {
+        var localAuth = new LocalAuthentication();
+
+        bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+            localizedReason: 'Please authenticate yourself',
+            useErrorDialogs: false);
+
+        if (didAuthenticate) {
+          print('Autenticado');
+          Navigator.pushReplacementNamed(context, homeRoute);
+        } else {
+          print('Não autenticado');
+          _description = "Digital não reconhecida";
+          notifyListeners();
+        }
       }
-
-      else
+      catch (e) 
       {
-        print('Não autenticado');
-        _description = "Digital não reconhecida";
-        notifyListeners();
+        print(e.toString());
       }
-    }
-    catch(e) 
-    {
-      print(e.toString());
-    
     }
   }
 
   void submitLogIn() async {
-   
     //Caso não exista uma senha cadastrada
     //Salva a senha inserida
-    if(_password == null)
-    {
-      _localData.saveUserPin(_enteredPassword);
-      _description = "Senha cadastrada com sucesso";
-      notifyListeners();
+    if (_password == null) {
 
-      Future.delayed(Duration(milliseconds: 1000));
-       Navigator.pushReplacementNamed(context, homeRoute);
-    }
-
-    //Caso já exista uma senha, verifica se está correta
-    else
-    {
-      //Caso a senha seja válida, reliza a navegação para Home
-      if(_password == _enteredPassword)
+      if(_enteredPassword.isNotEmpty)
       {
-          Navigator.pushReplacementNamed(context, homeRoute);
+        _localData.saveUserPin(_enteredPassword);
+        _description = "Senha cadastrada com sucesso";
+        notifyListeners();
+
+        Future.delayed(Duration(milliseconds: 1000));
+        Navigator.pushReplacementNamed(context, homeRoute);
       }
-      //Caso a senha esteja incorreta, altera texto para notificar o usuário
       else
       {
-        _description = "Senha incorreta";
+        _description = "Senha não pode ser nula";
         notifyListeners();
       }
     }
 
+    //Caso já exista uma senha, verifica se está correta
+    else {
+      //Caso a senha seja válida, reliza a navegação para Home
+      if (_password == _enteredPassword) {
+        Navigator.pushReplacementNamed(context, homeRoute);
+      }
+      //Caso a senha esteja incorreta, altera texto para notificar o usuário
+      else {
+        _description = "Senha incorreta";
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<bool> authenticateUser() async {
+    //Verifica digital apenas se já houver uma senha cadastrada
+    LocalAuthentication localAuth = LocalAuthentication();
+    List<BiometricType> availableBiometrics =  await localAuth.getAvailableBiometrics();
+
+    if (availableBiometrics.contains(BiometricType.fingerprint)) {
+      try {
+        var localAuth = new LocalAuthentication();
+
+        bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+            localizedReason: 'Please authenticate yourself',
+            useErrorDialogs: false);
+
+        return didAuthenticate;
+      }
+      catch (e) 
+      {
+        print(e.toString());
+      }
+    }
+
+    return false;
+  }
+
+  void changePassword(bool isAuth, bool submitChange)
+  {
+    if(isAuth)
+    {
+      _description = "Insira nova senha";
+      _isChangePassword = true;
+      notifyListeners();
+    }
+
+    if(submitChange)
+    {
+      if(_enteredPassword.isNotEmpty)
+      {
+        _localData.saveUserPin(_enteredPassword);
+        _description = "Senha cadastrada com sucesso";
+        notifyListeners();
+
+        Future.delayed(Duration(milliseconds: 1000));
+        Navigator.pushReplacementNamed(context, homeRoute);
+      }
+      else
+      {
+        _description = "Senha não pode ser nula";
+        notifyListeners();
+      }
+    }
+    
 
   }
 
@@ -138,7 +187,14 @@ class LogInProvider extends ChangeNotifier
   Icon get obscurePasswordIcon => _obscurePasswordIcon;
 
   String get password => _enteredPassword;
-  void set password(String password)=> _enteredPassword = password;
+  void set password(String password) => _enteredPassword = password;
+
+  String get newPassword => _newPassword;
+  void set newPassword(String password) => _newPassword = password;
 
   String get desciption => _description;
+
+  bool get firstLogin => _firstLogin;
+
+  bool get isChangePassword => _isChangePassword;
 }

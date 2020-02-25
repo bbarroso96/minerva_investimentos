@@ -20,6 +20,7 @@ class LocalData
     }
   }
 
+
   ///Recupera a senha do usuário
   Future<String> getUserPin() async
   {
