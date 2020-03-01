@@ -44,15 +44,15 @@ class HomeProvider extends ChangeNotifier
   }
 
   //Adiciona o ativo escolhida a lista de ativos
-  Future<bool> submitAsset() async
+  Future<int> submitAsset() async
   {
     print('Submit asset: ');
     print(_enteredAsset); 
     print(_enteredAmount);
 
-    bool isValid = await _validadeSubmitAsset();
+    int isValid = await _validadeSubmitAsset();
     
-    if(!isValid) {return false;}
+    if(isValid != 0) {return isValid;}
 
     //Constroi o ativo novo
     PortfolioAsset portfolioAsset = PortfolioAsset();
@@ -68,20 +68,29 @@ class HomeProvider extends ChangeNotifier
     portfolioProvider.addToPortfolio(portfolioAsset);
   }
 
-  Future<bool> _validadeSubmitAsset() async
+  Future<int> _validadeSubmitAsset() async
   {
-    var assetList = await assetProvider.getAssetList();
 
-    if(assetList.contains(_enteredAsset))  
+    //Verifica se a quantidade não é nula
+    if(_enteredAmount.isEmpty)
     {
-      print('Ativo válido');     
-      return true;
+      return 1;
     }
-    else
+
+    if(_portfolioList.contains(_enteredAsset))
     {
-      print('Ativo inválido');
-      return false;
+      return 2;
     }
+
+    //Verifica se o ativo inserido é válido
+    //Deve ser um ativo da lista de ativos recuperados do site da B3
+    var assetList = await assetProvider.getAssetList();
+    if(!assetList.contains(_enteredAsset))  
+    {
+      return 3;
+    }
+
+    return 0;
 
   }
 

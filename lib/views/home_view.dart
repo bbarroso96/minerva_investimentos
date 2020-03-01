@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/providers/asset_provider.dart';
 import 'package:minerva_investimentos/providers/home_provider.dart';
@@ -127,6 +128,10 @@ class HomeView extends StatelessWidget {
     );
   }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Diálogo de confirmação para excluir o ativo
+/////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<bool> _showConfirmDialog(context) {
     return showDialog(
       context: context,
@@ -148,6 +153,9 @@ class HomeView extends StatelessWidget {
     );
   }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Inserção do ativo
+/////////////////////////////////////////////////////////////////////////////////////////////////////
   void _settingModalBottomSheet(context, HomeProvider provider) {
     showModalBottomSheet(
         context: context,
@@ -199,10 +207,46 @@ class HomeView extends StatelessWidget {
                             child: IconButton(
                                 icon: Icon(Icons.check),
                                 onPressed: () async {
-                                  bool isValid = await provider.submitAsset();
 
-                                  if (isValid != true) {
-                                  } else {
+                                  int isValid = await provider.submitAsset();
+
+                                  //Caso a validação retorne erro
+                                  //Notifica o usuário com base no código de erro
+                                  if (isValid != 0) {
+
+                                    //Erro "1": Quantidade de ativo é inválida
+                                    if(isValid == 1)
+                                    {
+                                      Flushbar(
+                                        //  title: "Ativo inválido",
+                                        message: "Quantidade inválida",
+                                        duration: Duration(seconds: 1),
+                                      )..show(context);
+                                    }
+
+                                    //Erro "2": Ativo já presente no portifólio
+                                    else if(isValid == 2)
+                                    {
+                                      Flushbar(
+                                        //  title: "Ativo inválido",
+                                        message: "Ativo inválido",
+                                        duration: Duration(seconds: 1),
+                                      )..show(context);
+                                    }
+
+                                    //Erro "3": Nome de ativo é inválida
+                                    else if(isValid == 2)
+                                    {
+                                      Flushbar(
+                                        //  title: "Ativo inválido",
+                                        message: "Ativo inválido",
+                                        duration: Duration(seconds: 1),
+                                      )..show(context);
+                                    }
+                                   
+                                  }
+                                  else 
+                                  {
                                     Navigator.pop(context);
                                   }
                                 }))
@@ -216,6 +260,9 @@ class HomeView extends StatelessWidget {
         });
   }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Edição do ativo
+/////////////////////////////////////////////////////////////////////////////////////////////////////
   void _settingModalBottomSheetEdit(context, HomeProvider provider, int index) {
     showModalBottomSheet(
         context: context,
