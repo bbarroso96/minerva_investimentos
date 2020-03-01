@@ -17,8 +17,7 @@ class HomeView extends StatelessWidget {
       )),
       child: ChangeNotifierProvider<HomeProvider>(
         create: (_) => HomeProvider(
-          assetProvider: Provider.of<AssetProvider>(context, listen: true),
-        ),
+            assetProvider: Provider.of<AssetProvider>(context, listen: true)),
         child: Consumer<HomeProvider>(builder: (context, provider, _) {
           return Scaffold(
             backgroundColor: mainColor,
@@ -42,10 +41,13 @@ class HomeView extends StatelessWidget {
                     )),
                 bottom: PreferredSize(
                     //child: Text("Proventos Jan 2020",
-                    child: Text("Proventos  "+ DateTime.now().month.toString()+"/"+DateTime.now().year.toString(),
+                    child: Text(
+                        "Proventos  " +
+                            DateTime.now().month.toString() +
+                            "/" +
+                            DateTime.now().year.toString(),
                         style: TextStyle(fontSize: 15, color: Colors.white)),
                     preferredSize: null)),
-
             body: ListView.builder(
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               itemCount: provider.homeCardListLength,
@@ -57,24 +59,27 @@ class HomeView extends StatelessWidget {
                   background: Card(
                     color: Colors.blueGrey,
                     child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        child: Icon(Icons.settings),
-                        padding: const EdgeInsets.only(left: 10),)),
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          child: Icon(Icons.settings),
+                          padding: const EdgeInsets.only(left: 10),
+                        )),
                   ),
 
                   //Swipe para a esquerda (DELETE)
                   secondaryBackground: Card(
                     color: Colors.red,
                     child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        child: Icon(Icons.delete),
-                        padding: const EdgeInsets.only(right: 10),)),
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          child: Icon(Icons.delete),
+                          padding: const EdgeInsets.only(right: 10),
+                        )),
                   ),
 
                   //A key do card é o próprio nome do ativo
-                  key: ValueKey(provider.homeCardWidgetList[index].portfolioAsset.ticker),
+                  key: ValueKey(
+                      provider.homeCardWidgetList[index].portfolioAsset.ticker),
 
                   confirmDismiss: (direction) async {
                     //Swipe deletando
@@ -85,11 +90,7 @@ class HomeView extends StatelessWidget {
                     }
                     //Swipe config
                     else {
-                      _settingModalBottomSheetEdit(
-                        context, 
-                        provider,
-                        index
-                       );
+                      _settingModalBottomSheetEdit(context, provider, index);
                       return false;
                     }
                   },
@@ -98,7 +99,8 @@ class HomeView extends StatelessWidget {
                     //Remove do portifólio o ativo quando o swipe for pra esqueda
                     if (direction == DismissDirection.endToStart) {
                       print('Deletando do portifolio: ' +
-                          provider.homeCardWidgetList[index].portfolioAsset.ticker);
+                          provider
+                              .homeCardWidgetList[index].portfolioAsset.ticker);
                       provider.removeAsset(provider.homeCardWidgetList[index]);
                     }
                   },
@@ -162,43 +164,48 @@ class HomeView extends StatelessWidget {
                         //Imput ativo
                         Flexible(
                           flex: 4,
-                            child: TextFormField(     
-                              decoration: InputDecoration(helperText: 'Ativo'),                      
-                              keyboardType: TextInputType.text,
-                              textCapitalization: TextCapitalization.characters,
-                              obscureText: false,
-                              autovalidate: true, //Define autovalidação   
-                              validator: (String asset) {
+                          child: TextFormField(
+                            decoration: InputDecoration(helperText: 'Ativo'),
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.characters,
+                            obscureText: false,
+                            autovalidate: true, //Define autovalidação
+                            validator: (String asset) {
                               provider.enteredAsset = asset.toUpperCase();
-                            },                           
+                            },
                           ),
                         ),
 
-                     SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
 
                         //Imput qtd
                         Flexible(
                           flex: 1,
-                            child: TextFormField(
-                              decoration: InputDecoration(helperText: 'Qtd'),
-                              keyboardType: TextInputType.number,
-                              obscureText: false,
-                              autovalidate: true, //Define autovalidação
-                              validator: (String amout) {
+                          child: TextFormField(
+                            decoration: InputDecoration(helperText: 'Qtd'),
+                            keyboardType: TextInputType.number,
+                            obscureText: false,
+                            autovalidate: true, //Define autovalidação
+                            validator: (String amout) {
                               provider.enteredAmount = amout;
                             },
-                            
                           ),
                         ),
-                        
-                        Flexible (
-                          flex: 1,
-                          child: IconButton(
-                            icon: Icon(Icons.check),
-                            onPressed: (){provider.submitAsset(); Navigator.pop(context);}
-                          )
-                        )
 
+                        Flexible(
+                            flex: 1,
+                            child: IconButton(
+                                icon: Icon(Icons.check),
+                                onPressed: () async {
+                                  bool isValid = await provider.submitAsset();
+
+                                  if (isValid != true) {
+                                  } else {
+                                    Navigator.pop(context);
+                                  }
+                                }))
                       ],
                     ),
                   ),
@@ -207,8 +214,9 @@ class HomeView extends StatelessWidget {
             ),
           );
         });
-      }
-       void _settingModalBottomSheetEdit(context, HomeProvider provider, int index) {
+  }
+
+  void _settingModalBottomSheetEdit(context, HomeProvider provider, int index) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -224,43 +232,49 @@ class HomeView extends StatelessWidget {
                         //Imput ativo
                         Flexible(
                           flex: 4,
-                            child: TextFormField( 
-                              enabled: false,
-                              initialValue: provider.homeCardWidgetList[index].portfolioAsset.ticker,    
-                              decoration: InputDecoration(helperText: 'Ativo'),                      
-                              keyboardType: TextInputType.text,
-                              textCapitalization: TextCapitalization.characters,
-                              obscureText: false,
-                              autovalidate: true, //Define autovalidação                              
+                          child: TextFormField(
+                            enabled: false,
+                            initialValue: provider.homeCardWidgetList[index]
+                                .portfolioAsset.ticker,
+                            decoration: InputDecoration(
+                              helperText: 'Ativo',
+                            ),
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.characters,
+                            obscureText: false,
+                            autovalidate: true, //Define autovalidação
                           ),
                         ),
 
-                     SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
 
                         //Imput qtd
                         Flexible(
                           flex: 1,
-                            child: TextFormField(
-                              initialValue: provider.homeCardWidgetList[index].portfolioAsset.amount.toString(),
-                              decoration: InputDecoration(helperText: 'Qtd'),
-                              keyboardType: TextInputType.number,
-                              obscureText: false,
-                              autovalidate: true, //Define autovalidação
-                              validator: (String amout) {
+                          child: TextFormField(
+                            initialValue: provider
+                                .homeCardWidgetList[index].portfolioAsset.amount
+                                .toString(),
+                            decoration: InputDecoration(helperText: 'Qtd'),
+                            keyboardType: TextInputType.number,
+                            obscureText: false,
+                            autovalidate: true, //Define autovalidação
+                            validator: (String amout) {
                               provider.enteredAmount = amout;
                             },
-                            
                           ),
                         ),
-                        
-                        Flexible (
-                          flex: 1,
-                          child: IconButton(
-                            icon: Icon(Icons.check),
-                            onPressed: (){provider.editAsset(index); Navigator.pop(context);}
-                          )
-                        )
 
+                        Flexible(
+                            flex: 1,
+                            child: IconButton(
+                                icon: Icon(Icons.check),
+                                onPressed: () {
+                                  provider.editAsset(index);
+                                  Navigator.pop(context);
+                                }))
                       ],
                     ),
                   ),
@@ -268,6 +282,6 @@ class HomeView extends StatelessWidget {
               ],
             ),
           );
-        });}
-
+        });
+  }
 }

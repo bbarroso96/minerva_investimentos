@@ -1,5 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/data/db_data.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/providers/asset_provider.dart';
@@ -9,6 +10,8 @@ import 'package:minerva_investimentos/widgets/homeCard.dart';
 class HomeProvider extends ChangeNotifier
 {
   final AssetProvider assetProvider;
+  final BuildContext context;
+
   PortfolioProvider portfolioProvider = PortfolioProvider();
   List<PortfolioAsset> _portfolioList = List<PortfolioAsset>();
 
@@ -21,7 +24,7 @@ class HomeProvider extends ChangeNotifier
   List<HomeCardWidget> _homeCardList = List<HomeCardWidget>();
   int _homeCardListLength = 0;
 
-  HomeProvider({this.assetProvider})
+  HomeProvider({this.assetProvider, this.context})
   {
     _init();
   }
@@ -41,11 +44,15 @@ class HomeProvider extends ChangeNotifier
   }
 
   //Adiciona o ativo escolhida a lista de ativos
-  void submitAsset() async
+  Future<bool> submitAsset() async
   {
     print('Submit asset: ');
     print(_enteredAsset); 
     print(_enteredAmount);
+
+    bool isValid = await _validadeSubmitAsset();
+    
+    if(!isValid) {return false;}
 
     //Constroi o ativo novo
     PortfolioAsset portfolioAsset = PortfolioAsset();
@@ -59,6 +66,23 @@ class HomeProvider extends ChangeNotifier
 
     //Adiciona o ativo ao portifólio
     portfolioProvider.addToPortfolio(portfolioAsset);
+  }
+
+  Future<bool> _validadeSubmitAsset() async
+  {
+    var assetList = await assetProvider.getAssetList();
+
+    if(assetList.contains(_enteredAsset))  
+    {
+      print('Ativo válido');     
+      return true;
+    }
+    else
+    {
+      print('Ativo inválido');
+      return false;
+    }
+
   }
 
   void removeAsset(HomeCardWidget removeItem)

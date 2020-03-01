@@ -30,12 +30,14 @@ class AssetProvider
       {
         var a = await bd.queryAssetTable();
 
+        /*DEBUG: printa os ativos do BD
         int i = 0;
         print('ATIVOS JÀ NO SQL');
         for (var item in a) {
           print(a[i]);
           i++;
         }
+        */
       }
       //Caso não existam dados no bd, tenta recuperar no site da B3 e armazenar no bd
       else
@@ -54,6 +56,7 @@ class AssetProvider
         //Salva no bd a lista de ativos
         var b = await bd.insertAssetList(assetListFromRegex);
 
+        /*
         //DEBUG: le a lista de ativos que foi inserida
         Future.delayed(Duration(milliseconds: 3000));
         var a = await bd.queryAssetTable();
@@ -64,32 +67,27 @@ class AssetProvider
           print(a[i]);
           i++;
         }
-      }
-
-
-      
-
+        */
+      }      
     }
 
 
+  Future<List<String>> getAssetList() async
+  {
+    //Tenta recuperar a lista de ativos listados na b3 armazenados no bd
+      BdData bd = BdData();
+      var bdAssetList = await bd.queryAssetTable();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      List<B3Asset> assetList = List<B3Asset>();
+      List<String> assetNameList = List<String>();
+      for (var item in bdAssetList.toList())
+      {
+        assetList.add(B3Asset.fromJson(item));
+        assetNameList.add(B3Asset.fromJson(item).ticker);
+      }
+  
+      return assetNameList; //CONTIUAR mapear pararetornar apenas a lista de ativos
+  }
 
   Future<void> a()
   async {
