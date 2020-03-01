@@ -208,42 +208,16 @@ class HomeView extends StatelessWidget {
                                 icon: Icon(Icons.check),
                                 onPressed: () async {
 
-                                  int isValid = await provider.submitAsset();
+                                  String submitError = await provider.submitAsset();
 
                                   //Caso a validação retorne erro
-                                  //Notifica o usuário com base no código de erro
-                                  if (isValid != 0) {
-
-                                    //Erro "1": Quantidade de ativo é inválida
-                                    if(isValid == 1)
-                                    {
+                                  //Notifica o usuário com o erro
+                                  if (submitError != "OK") {
                                       Flushbar(
                                         //  title: "Ativo inválido",
-                                        message: "Quantidade inválida",
+                                        message: submitError,
                                         duration: Duration(seconds: 1),
-                                      )..show(context);
-                                    }
-
-                                    //Erro "2": Ativo já presente no portifólio
-                                    else if(isValid == 2)
-                                    {
-                                      Flushbar(
-                                        //  title: "Ativo inválido",
-                                        message: "Ativo inválido",
-                                        duration: Duration(seconds: 1),
-                                      )..show(context);
-                                    }
-
-                                    //Erro "3": Nome de ativo é inválida
-                                    else if(isValid == 2)
-                                    {
-                                      Flushbar(
-                                        //  title: "Ativo inválido",
-                                        message: "Ativo inválido",
-                                        duration: Duration(seconds: 1),
-                                      )..show(context);
-                                    }
-                                   
+                                      )..show(context);                                   
                                   }
                                   else 
                                   {

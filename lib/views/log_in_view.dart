@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:minerva_investimentos/data/B3_data.dart';
@@ -63,11 +64,33 @@ class LogInView extends StatelessWidget {
                       
                       if(provider.isChangePassword)
                       {
-                        provider.changePassword(false, true);
+                        bool isValid = provider.changePassword(false, true);
+
+                        //Caso a senha seja nula, notifica o usuário
+                        if(isValid == false)
+                        {
+                          Flushbar(
+                                    //  title: "Ativo inválido",
+                                    message: "Senha não deve ser nula",
+                                    duration: Duration(seconds: 1),
+                                  )..show(context);
+                        }
                       }
                       else
                       {
-                        provider.submitLogIn();
+                        bool isValid = await provider.submitLogIn();
+
+                        //Caso a senha não seja válida
+                        //Verifica se é o primeiro login => senha não pode ser nula
+                        //Se não for o primeiro login => senha incorreta
+                        if(isValid == false)
+                        {
+                          Flushbar(
+                                    //  title: "Ativo inválido",
+                                    message: provider.firstLogin == true ? "Senha não deve ser nula" : "Senha incorreta",
+                                    duration: Duration(seconds: 1),
+                                  )..show(context);
+                        }
                       }
 
                       //provider.toggleObscurePassword();
@@ -86,8 +109,26 @@ class LogInView extends StatelessWidget {
                         child: Text('Alterar senha'),
                         onPressed: provider.firstLogin == true ? null : 
                           () async {  
-                            bool auth = await provider.authenticateUser(); 
-                            provider.changePassword(auth, false);       
+
+                            //Autentica o usuário
+                            bool auth = await provider.authenticateUser();
+
+                            //Caso seja altenticado o metodo altera o texto do textField
+                            //para a informação de "insira nova senha"
+                            bool isValid = provider.changePassword(auth, false); 
+
+                            //Caso o usuário não seja autenticado
+                            //Gera notificação de aviso                            
+                            if(auth == false)
+                            {
+                              Flushbar(
+                                        //  title: "Ativo inválido",
+                                        message: "Usuário não autenticado",
+                                        duration: Duration(seconds: 1),
+                                      )..show(context);
+                            }
+                                
+
                           },
                       ),
 

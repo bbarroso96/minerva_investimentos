@@ -94,7 +94,8 @@ class LogInProvider extends ChangeNotifier {
     }
   }
 
-  void submitLogIn() async {
+  Future<bool> submitLogIn() async {
+
     //Caso não exista uma senha cadastrada
     //Salva a senha inserida
     if (_password == null) {
@@ -112,19 +113,23 @@ class LogInProvider extends ChangeNotifier {
       {
         _description = "Senha não pode ser nula";
         notifyListeners();
+        return false;
       }
     }
 
     //Caso já exista uma senha, verifica se está correta
     else {
+      
       //Caso a senha seja válida, reliza a navegação para Home
       if (_password == _enteredPassword) {
         Navigator.pushReplacementNamed(context, homeRoute);
       }
+
       //Caso a senha esteja incorreta, altera texto para notificar o usuário
       else {
         _description = "Senha incorreta";
         notifyListeners();
+        return false;
       }
     }
   }
@@ -153,7 +158,7 @@ class LogInProvider extends ChangeNotifier {
     return false;
   }
 
-  void changePassword(bool isAuth, bool submitChange)
+  bool changePassword(bool isAuth, bool submitChange)
   {
     if(isAuth)
     {
@@ -177,10 +182,11 @@ class LogInProvider extends ChangeNotifier {
       {
         _description = "Senha não pode ser nula";
         notifyListeners();
+        return false;
       }
     }
     
-
+    return true;
   }
 
   bool get obscurePassword => _obscurePassword;

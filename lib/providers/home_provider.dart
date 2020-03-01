@@ -44,15 +44,15 @@ class HomeProvider extends ChangeNotifier
   }
 
   //Adiciona o ativo escolhida a lista de ativos
-  Future<int> submitAsset() async
+  Future<String> submitAsset() async
   {
     print('Submit asset: ');
     print(_enteredAsset); 
     print(_enteredAmount);
 
-    int isValid = await _validadeSubmitAsset();
+    var isValid = await _validadeSubmitAsset();
     
-    if(isValid != 0) {return isValid;}
+    if(isValid != "OK") {return isValid;}
 
     //Constroi o ativo novo
     PortfolioAsset portfolioAsset = PortfolioAsset();
@@ -66,20 +66,37 @@ class HomeProvider extends ChangeNotifier
 
     //Adiciona o ativo ao portifólio
     portfolioProvider.addToPortfolio(portfolioAsset);
+
+    return isValid;
   }
 
-  Future<int> _validadeSubmitAsset() async
+  Future<String> _validadeSubmitAsset() async
   {
+
+    //Verifica se a quantidade não é nula
+    if(_enteredAsset.isEmpty)
+    {
+      return "Ativo deve ser preenchido";
+    }
 
     //Verifica se a quantidade não é nula
     if(_enteredAmount.isEmpty)
     {
-      return 1;
+      return "Quantidade deve ser preenchida";
     }
 
-    if(_portfolioList.contains(_enteredAsset))
+    //Verifica se o ativo possui 4 caracteres
+    if(_enteredAsset.length != 4)
     {
-      return 2;
+      return "Ativo deve conter 4 caracteres";
+    }
+
+    //Verifica se o ativo já não existe no portfolio
+    PortfolioAsset portfolioTest = _portfolioList.firstWhere((portfolioTest) => portfolioTest.ticker == _enteredAsset,
+                                                              orElse: () => null);
+    if(portfolioTest != null)
+    {
+      return "Ativo já existe na carteira";
     }
 
     //Verifica se o ativo inserido é válido
@@ -87,10 +104,11 @@ class HomeProvider extends ChangeNotifier
     var assetList = await assetProvider.getAssetList();
     if(!assetList.contains(_enteredAsset))  
     {
-      return 3;
+      return "Ativo inválido";
     }
 
-    return 0;
+    //Caso não exista erro, retorna string vazia
+    return "OK";
 
   }
 
