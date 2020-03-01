@@ -9,9 +9,46 @@ final PortfolioAsset portfolioAsset;
 
   @override
   Widget build(BuildContext context) {
- Text ativo = Text(portfolioAsset.assetTicker);
-   Text cotacao = Text(portfolioAsset.assetAmount.toString());
-   Text dividendo = Text('123');
+    double mockDiv = 124.48;
+    double totalDividend = mockDiv*portfolioAsset.amount;
+
+    Text price = Text('123,45');
+    Text dividendo = Text('0,82'); 
+
+   RichText dividend = RichText(
+      
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: <TextSpan>
+        [
+          TextSpan(text: "DY: " + mockDiv.toString(),
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: "\nTotal: " + (totalDividend.toString()),
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
+          ),
+        ]
+      ),
+    );
+    
+    RichText ticker = RichText(
+      
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: <TextSpan>
+        [
+          TextSpan(text: portfolioAsset.assetTicker,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16  )
+          ),
+          TextSpan(text: "\nx " + portfolioAsset.assetAmount.toString(),
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
+          ),
+        ]
+      ),
+    );
+
+    Text ativo = Text(portfolioAsset.assetTicker);
+    Text qtd = Text(portfolioAsset.assetAmount.toString());
 
     return Card(
       margin: const EdgeInsets.only(top: 4.0, bottom: 4.0),
@@ -25,16 +62,12 @@ final PortfolioAsset portfolioAsset;
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    ativo, SizedBox(width: 10,)
-                    ,dividendo
+                    ticker, SizedBox(width: 10,)
+                    ,price
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    Text("DY: "),
-                    cotacao
-                  ],
-                )],
+                dividend
+               ] ,
             ),
             Divider(),
             Text('separator')
