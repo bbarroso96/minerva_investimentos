@@ -55,9 +55,6 @@ class B3Data
   {
     try
     {
-      //!!! recebe valor padrao para teste
-      url = "http://fnet.bmfbovespa.com.br/fnet/publico/exibirDocumento?id=79225";
-
       http.Response response = await http.get(url);
 
 

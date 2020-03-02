@@ -13,4 +13,6 @@ class FNET
   String referenceDate;
 
   String year;
+
+  String ticker;
 }

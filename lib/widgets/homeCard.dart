@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
+import 'package:minerva_investimentos/models/fnet_model.dart';
 
 class HomeCardWidget extends StatelessWidget {
-  const HomeCardWidget({Key key, this.portfolioAsset})
+
+  const HomeCardWidget({Key key, this.portfolioAsset, this.fnetData})
       : super(key: key);
 
 final PortfolioAsset portfolioAsset;
+final FNET fnetData;
 
   @override
   Widget build(BuildContext context) {
-    double mockDiv = 124.48;
-    double totalDividend = mockDiv*portfolioAsset.amount;
+
+    double totalDividend = fnetData.dividend * portfolioAsset.amount;
 
     Text price = Text('123,45');
     Text dividendo = Text('0,82'); 
@@ -21,10 +24,10 @@ final PortfolioAsset portfolioAsset;
         style: DefaultTextStyle.of(context).style,
         children: <TextSpan>
         [
-          TextSpan(text: "DY: " + mockDiv.toString(),
+          TextSpan(text: "DY: " + fnetData.dividend.toStringAsFixed(2),
             style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
           ),
-          TextSpan(text: "\nTotal: " + (totalDividend.toString()),
+          TextSpan(text: "\nTotal: " + (totalDividend.toStringAsFixed(2)),
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
           ),
         ]

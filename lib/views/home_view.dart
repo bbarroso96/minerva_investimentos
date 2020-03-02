@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
                 backgroundColor: mainColor,
                 elevation: 0,
                 centerTitle: true,
-                title: Text("R\$ 100,00 ",
+                title: Text("R\$ " + provider.totalEarnings.toStringAsFixed(2),
                     style: TextStyle(
                       fontSize: 30,
                     )),

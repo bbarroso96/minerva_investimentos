@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/data/db_data.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
+import 'package:minerva_investimentos/models/fnet_model.dart';
 import 'package:minerva_investimentos/providers/asset_provider.dart';
 import 'package:minerva_investimentos/providers/portfolio_provider.dart';
+import 'package:minerva_investimentos/repository/fnet_repository.dart';
 import 'package:minerva_investimentos/widgets/homeCard.dart';
 
 class HomeProvider extends ChangeNotifier
@@ -14,6 +16,10 @@ class HomeProvider extends ChangeNotifier
 
   PortfolioProvider portfolioProvider = PortfolioProvider();
   List<PortfolioAsset> _portfolioList = List<PortfolioAsset>();
+  double _totalEarnings;
+
+  FnetRepository _fnetRepository = FnetRepository();
+  List<FNET> _fnetList = List<FNET>();
 
   String _enteredAsset;
   String _enteredAmount;
@@ -34,14 +40,32 @@ class HomeProvider extends ChangeNotifier
     //Recupera portifólio
     _portfolioList = await portfolioProvider.getPortfolio();
 
+    //Recupera dados dos dividendos diretamente do site
+    //TODO: implemenetar chek no bd, toda a logica pra não iir na url sem necessidade, etc
+    List<String> porfolioAssetLIst = List.from(_portfolioList.map((f) => f.ticker));
+    _fnetList = await _fnetRepository.fnetList( porfolioAssetLIst );
+
     //Popula a lista de ativos da home
+    int i = 0;
     for (PortfolioAsset asset in _portfolioList)
     {
-     _homeCardList.add( HomeCardWidget(portfolioAsset: asset));
+     _homeCardList.add(HomeCardWidget(portfolioAsset: asset, fnetData: _fnetList[i]));
+
+       //Calcula o valor total dos dividendos
+       _totalEarnings = asset.amount * _fnetList[i].dividend;
+
+     i++;
     }
+
     _homeCardListLength = _homeCardList.length;
+
+   
+
     notifyListeners();
   }
+
+  //TODO: atualizar o valor total dos dividendos com o add, edit, exclui, etc;
+
 
   //Adiciona o ativo escolhida a lista de ativos
   Future<String> submitAsset() async
@@ -72,7 +96,6 @@ class HomeProvider extends ChangeNotifier
 
   Future<String> _validadeSubmitAsset() async
   {
-
     //Verifica se a quantidade não é nula
     if(_enteredAsset.isEmpty)
     {
@@ -145,4 +168,6 @@ class HomeProvider extends ChangeNotifier
 
    List<HomeCardWidget> get homeCardWidgetList => _homeCardList;
    int get homeCardListLength => _homeCardListLength;
+
+   double get totalEarnings => _totalEarnings;
 }

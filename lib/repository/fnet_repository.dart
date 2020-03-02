@@ -8,23 +8,38 @@ class FnetRepository
 {
 
   ///Acessa os respectivos documentos da FNET e recupera a lsita de dados FNET
-  Future<FNET> fnetList() async
+  Future<List<FNET>> fnetList(List<String> assetList) async
   {
     Functions functions = Functions();
     B3Data b3 = B3Data();
+    List<FNET> fnetList = List<FNET>();
 
-    //Acessa site FNET e recupera corpo do HTML
-    String response = await b3.fetchFnetDocument("dummy");
+    //Itera a lista de ativos para acessar o respectivo site e
+    //recuperar o respectivo documendo com as informações dos dividendos
+    for (String asset in assetList)
+    {
+      String dummyUrl = "http://fnet.bmfbovespa.com.br/fnet/publico/exibirDocumento?id=79225";
 
-    //Aplica regex no HTML e recupera lista de Assets
-    FNET a = functions.regexFnetList(response);                  
+      //Acessa site FNET e recupera corpo do HTML
+      String response = await b3.fetchFnetDocument(dummyUrl);
 
-    print(a.infoDate); 
-    print(a.baseDate); 
-    print(a.paymentDate); 
-    print(a.dividend.toString()); 
-    print(a.referenceDate);
-    print(a.year);
+      //Aplica regex no HTML e recupera lista de Assets
+      FNET a = functions.regexFnetList(response);  
+      a.ticker = asset;                
+
+      print(a.infoDate); 
+      print(a.baseDate); 
+      print(a.paymentDate); 
+      print(a.dividend.toString()); 
+      print(a.referenceDate);
+      print(a.year);
+      print(a.ticker);
+
+      fnetList.add(a);
+    }
+
+    return fnetList;
+    
   }
 
 }
