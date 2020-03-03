@@ -18,10 +18,25 @@ class FnetRepository
     //recuperar o respectivo documendo com as informações dos dividendos
     for (String asset in assetList)
     {
-      String dummyUrl = "http://fnet.bmfbovespa.com.br/fnet/publico/exibirDocumento?id=79225";
+      List<String> _urls = await getAssetDocumentUrl(asset);
 
-      //Acessa site FNET e recupera corpo do HTML
-      String response = await b3.fetchFnetDocument(dummyUrl);
+      String response;
+
+      for (String url in _urls) 
+      {
+         //Acessa site FNET e recupera corpo do HTML
+        response = await b3.fetchFnetDocument(url);
+
+        //Verifica se o ativo do documento está correto
+        //Pode ser o XPTO3 etc
+        //Queremos XPTO11
+        bool isValid = response.contains(asset+"11");  
+
+        //Caso seja o documento certo, sai do loop
+        if(isValid) {break;}
+      }
+
+      //TODO: validar se foi possível recuperar documento
 
       //Aplica regex no HTML e recupera lista de Assets
       FNET a = functions.regexFnetList(response);  
@@ -40,6 +55,31 @@ class FnetRepository
 
     return fnetList;
     
+  }
+
+  Future<List<String>> getAssetDocumentUrl(String asset) async
+  {
+    B3Data b3 = B3Data();
+  
+    String response = await b3.fetchFundExplorerData(asset); 
+
+    List<String> a = response.split("Aviso aos Cotistas");
+
+    List<String> b = List<String>();
+    
+    for (String c in a) 
+    {
+      String d = c.substring(c.lastIndexOf("href=\"")+6, c.lastIndexOf("\">"));
+
+      d = d.replaceFirst("https", "http");
+
+      print(d);
+
+      b.add(d);
+    }
+  
+
+    return b;
   }
 
 }

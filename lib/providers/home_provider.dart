@@ -16,7 +16,7 @@ class HomeProvider extends ChangeNotifier
 
   PortfolioProvider portfolioProvider = PortfolioProvider();
   List<PortfolioAsset> _portfolioList = List<PortfolioAsset>();
-  double _totalEarnings;
+  double _totalEarnings = 0;
 
   FnetRepository _fnetRepository = FnetRepository();
   List<FNET> _fnetList = List<FNET>();
@@ -52,7 +52,7 @@ class HomeProvider extends ChangeNotifier
      _homeCardList.add(HomeCardWidget(portfolioAsset: asset, fnetData: _fnetList[i]));
 
        //Calcula o valor total dos dividendos
-       _totalEarnings = asset.amount * _fnetList[i].dividend;
+       _totalEarnings += asset.amount * _fnetList[i].dividend;
 
      i++;
     }

@@ -71,6 +71,19 @@ class B3Data
     } 
 
   }
+
+  //Acessa site "fundsExplorer"
+  Future<String> fetchFundExplorerData(String asset) async
+  {
+    //String _url = "https://www.fundsexplorer.com.br/comunicados";
+    String _url ="https://www.fundsexplorer.com.br/funds/" + asset+"11";
+
+    http.Response response = await http.get(_url);
+    
+    //printWrapped(response.body);
+
+    return response.body;
+  }
   
   
   Future<http.Response> recuperaArquivoFnet() async {
