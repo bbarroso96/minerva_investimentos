@@ -27,9 +27,6 @@ class HomeProvider extends ChangeNotifier
   //TODO: implementar lógica da lista de ativos
   List<B3Asset> _b3AssetList = List<B3Asset>();
 
-  List<HomeCardWidget> _homeCardList = List<HomeCardWidget>();
-  int _homeCardListLength = 0;
-
   HomeProvider({this.assetProvider, this.context})
   {
     _init();
@@ -40,26 +37,19 @@ class HomeProvider extends ChangeNotifier
     //Recupera portifólio
     _portfolioList = await portfolioProvider.getPortfolio();
 
+
     //Recupera dados dos dividendos diretamente do site
     //TODO: implemenetar chek no bd, toda a logica pra não iir na url sem necessidade, etc
     List<String> porfolioAssetLIst = List.from(_portfolioList.map((f) => f.ticker));
     _fnetList = await _fnetRepository.fnetList( porfolioAssetLIst );
 
-    //Popula a lista de ativos da home
+    //Calcula o valor total dos dividendos
     int i = 0;
     for (PortfolioAsset asset in _portfolioList)
-    {
-     _homeCardList.add(HomeCardWidget(portfolioAsset: asset, fnetData: _fnetList[i]));
-
-       //Calcula o valor total dos dividendos
+    {  
        _totalEarnings += asset.amount * _fnetList[i].dividend;
-
-     i++;
-    }
-
-    _homeCardListLength = _homeCardList.length;
-
-   
+      i++;
+    }   
 
     notifyListeners();
   }
@@ -84,11 +74,10 @@ class HomeProvider extends ChangeNotifier
     portfolioAsset.amount = int.parse(_enteredAmount);
     _portfolioList.add(portfolioAsset);
 
-    //Adicona a lista de ativos da home
-    FNET _fnetTemp = FNET();
-    _fnetTemp.dividend = 0.0;
-    _homeCardList.add( HomeCardWidget(portfolioAsset: portfolioAsset, fnetData: _fnetTemp,));
-    _homeCardListLength = _homeCardList.length;
+    FNET fnet = FNET();
+    fnet.dividend = 0.0;
+    _fnetList.add(fnet);
+
     notifyListeners();
 
     //Adiciona o ativo ao portifólio
@@ -102,21 +91,18 @@ class HomeProvider extends ChangeNotifier
 
   void updateFnet(List<String> asset) async
   {
+    //Recupera os dividendos por ativo
     List<FNET> _fnetUpdate = await _fnetRepository.fnetList(asset);
 
+    //Itera os dividendos para atualizar o valor total
     int i = 0;
     for (FNET fnet in _fnetUpdate)
-    {
-     
-      HomeCardWidget card = _homeCardList.firstWhere( (f) => f.portfolioAsset.ticker == asset[i] );
-      
-      int editIndex = _homeCardList.indexWhere( (f) => f.portfolioAsset.ticker == asset[i] );
+    {    
+      int updateIndex = _portfolioList.indexWhere((f) => f.ticker == asset[i]);
 
-      PortfolioAsset cardPortfolioAsset = card.portfolioAsset;
-      
-      _homeCardList[editIndex] = HomeCardWidget(portfolioAsset: cardPortfolioAsset, fnetData:  fnet,);
+      _fnetList[updateIndex] = fnet;
 
-      _totalEarnings += cardPortfolioAsset.amount * fnet.dividend;
+      _totalEarnings += _portfolioList[updateIndex].amount * fnet.dividend;
 
       notifyListeners();
 
@@ -166,44 +152,36 @@ class HomeProvider extends ChangeNotifier
 
   }
 
-  void removeAsset(HomeCardWidget removeItem)
+  void removeAsset(int removeIndex)
   {
-    _homeCardList.remove(removeItem);
-    _homeCardListLength = _homeCardList.length;
+    //Atualiza o valor total dos dividendos
+    _totalEarnings -= _portfolioList[removeIndex].amount * _fnetList[removeIndex].dividend;
 
-    _totalEarnings -= removeItem.portfolioAsset.amount * removeItem.fnetData.dividend;
+    portfolioProvider.removeAssetFromPorfolio(_portfolioList[removeIndex].ticker);
 
-    _portfolioList.remove(removeItem.portfolioAsset);
+    //Atualiza a lista de portifolio
+    _portfolioList.remove(_portfolioList[removeIndex]);
+
+    //Atualiza a lista de fnet
+    _fnetList.remove(_fnetList[removeIndex]);
 
     notifyListeners();
-
-    portfolioProvider.removeAssetFromPorfolio(removeItem.portfolioAsset.ticker);
   }
 
   void editAsset(int editIndex)
   {
     print('Edit asset: ');
-    print(homeCardWidgetList[editIndex].portfolioAsset.ticker.toString()); 
     print(_enteredAmount);
 
-    //Constroi o ativo novo
-    PortfolioAsset portfolioAsset = PortfolioAsset();
-    portfolioAsset.ticker = homeCardWidgetList[editIndex].portfolioAsset.ticker;
-    portfolioAsset.amount = int.parse(_enteredAmount);
-
-    //Recupera fnet
-    FNET cardFnet = _homeCardList[editIndex].fnetData;
-    PortfolioAsset cardPortfolioAsset = _homeCardList[editIndex].portfolioAsset;
-
-    _homeCardList[editIndex] = HomeCardWidget(portfolioAsset: portfolioAsset, fnetData: cardFnet);
-
-    _portfolioList[editIndex] = portfolioAsset;
-
     //Novo - Antigo
-    _totalEarnings += ( (portfolioAsset.amount * cardFnet.dividend) - (cardPortfolioAsset.amount * cardFnet.dividend));
+    _totalEarnings += ( (int.parse(_enteredAmount) - _portfolioList[editIndex].amount)  * _fnetList[editIndex].dividend ) ;
+
+    //Atualiza qtd
+    _portfolioList[editIndex].amount = int.parse(_enteredAmount);
+
     notifyListeners();
 
-    portfolioProvider.editAssetFromPorfolio(portfolioAsset);
+    portfolioProvider.editAssetFromPorfolio(_portfolioList[editIndex]);
   }
 
    String get enteredAsset => _enteredAsset;
@@ -212,8 +190,9 @@ class HomeProvider extends ChangeNotifier
    String get enteredAmount => _enteredAmount;
    void set enteredAmount(String amount)=> _enteredAmount = amount;
 
-   List<HomeCardWidget> get homeCardWidgetList => _homeCardList;
-   int get homeCardListLength => _homeCardListLength;
+   List<PortfolioAsset> get portfolioList => _portfolioList;
+
+   List<FNET> get fnetList => _fnetList;
 
    double get totalEarnings => _totalEarnings;
 }

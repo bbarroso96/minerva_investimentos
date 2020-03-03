@@ -51,10 +51,14 @@ class HomeView extends StatelessWidget {
                     preferredSize: null)),
             body: ListView.builder(
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              itemCount: provider.homeCardListLength,
+              itemCount: provider.portfolioList.length,
               itemBuilder: (context, int index) {
                 return Dismissible(
-                  child: provider.homeCardWidgetList[index],
+                  //child: provider.homeCardWidgetList[index],
+                  child: HomeCardWidget(
+                                          portfolioAsset: provider.portfolioList[index], 
+                                          fnetData: provider.fnetList[index]
+                                        ),
 
                   //Swipe para a direita (CONFIG)
                   background: Card(
@@ -80,7 +84,7 @@ class HomeView extends StatelessWidget {
 
                   //A key do card é o próprio nome do ativo
                   key: ValueKey(
-                      provider.homeCardWidgetList[index].portfolioAsset.ticker),
+                      provider.portfolioList[index].ticker),
 
                   confirmDismiss: (direction) async {
                     //Swipe deletando
@@ -100,9 +104,8 @@ class HomeView extends StatelessWidget {
                     //Remove do portifólio o ativo quando o swipe for pra esqueda
                     if (direction == DismissDirection.endToStart) {
                       print('Deletando do portifolio: ' +
-                          provider
-                              .homeCardWidgetList[index].portfolioAsset.ticker);
-                      provider.removeAsset(provider.homeCardWidgetList[index]);
+                          provider.portfolioList[index].ticker);
+                      provider.removeAsset(index);
                     }
                   },
                 );
@@ -255,8 +258,7 @@ class HomeView extends StatelessWidget {
                           flex: 4,
                           child: TextFormField(
                             enabled: false,
-                            initialValue: provider.homeCardWidgetList[index]
-                                .portfolioAsset.ticker,
+                            initialValue: provider.portfolioList[index].ticker,
                             decoration: InputDecoration(
                               helperText: 'Ativo',
                             ),
@@ -275,9 +277,7 @@ class HomeView extends StatelessWidget {
                         Flexible(
                           flex: 1,
                           child: TextFormField(
-                            initialValue: provider
-                                .homeCardWidgetList[index].portfolioAsset.amount
-                                .toString(),
+                            initialValue: provider.portfolioList[index].amount.toString(),
                             decoration: InputDecoration(helperText: 'Qtd'),
                             keyboardType: TextInputType.number,
                             obscureText: false,
