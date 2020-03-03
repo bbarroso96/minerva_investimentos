@@ -82,18 +82,49 @@ class HomeProvider extends ChangeNotifier
     PortfolioAsset portfolioAsset = PortfolioAsset();
     portfolioAsset.ticker = _enteredAsset;
     portfolioAsset.amount = int.parse(_enteredAmount);
+    _portfolioList.add(portfolioAsset);
 
     //Adicona a lista de ativos da home
-    _homeCardList.add( HomeCardWidget(portfolioAsset: portfolioAsset));
+    FNET _fnetTemp = FNET();
+    _fnetTemp.dividend = 0.0;
+    _homeCardList.add( HomeCardWidget(portfolioAsset: portfolioAsset, fnetData: _fnetTemp,));
     _homeCardListLength = _homeCardList.length;
     notifyListeners();
 
     //Adiciona o ativo ao portifólio
     portfolioProvider.addToPortfolio(portfolioAsset);
 
+    //Redundandte passar "_enteredAsset"
+    updateFnet([_enteredAsset]);
+
     return isValid;
   }
 
+  void updateFnet(List<String> asset) async
+  {
+    List<FNET> _fnetUpdate = await _fnetRepository.fnetList(asset);
+
+    int i = 0;
+    for (FNET fnet in _fnetUpdate)
+    {
+     
+      HomeCardWidget card = _homeCardList.firstWhere( (f) => f.portfolioAsset.ticker == asset[i] );
+      
+      int editIndex = _homeCardList.indexWhere( (f) => f.portfolioAsset.ticker == asset[i] );
+
+      PortfolioAsset cardPortfolioAsset = card.portfolioAsset;
+      
+      _homeCardList[editIndex] = HomeCardWidget(portfolioAsset: cardPortfolioAsset, fnetData:  fnet,);
+
+      _totalEarnings += cardPortfolioAsset.amount * fnet.dividend;
+
+      notifyListeners();
+
+     i++;
+    }
+  }
+
+  //Valida inserção do ativo no portifolio
   Future<String> _validadeSubmitAsset() async
   {
     //Verifica se a quantidade não é nula
@@ -139,7 +170,13 @@ class HomeProvider extends ChangeNotifier
   {
     _homeCardList.remove(removeItem);
     _homeCardListLength = _homeCardList.length;
+
+    _totalEarnings -= removeItem.portfolioAsset.amount * removeItem.fnetData.dividend;
+
+    _portfolioList.remove(removeItem.portfolioAsset);
+
     notifyListeners();
+
     portfolioProvider.removeAssetFromPorfolio(removeItem.portfolioAsset.ticker);
   }
 
@@ -154,7 +191,16 @@ class HomeProvider extends ChangeNotifier
     portfolioAsset.ticker = homeCardWidgetList[editIndex].portfolioAsset.ticker;
     portfolioAsset.amount = int.parse(_enteredAmount);
 
-    _homeCardList[editIndex] = HomeCardWidget(portfolioAsset: portfolioAsset);
+    //Recupera fnet
+    FNET cardFnet = _homeCardList[editIndex].fnetData;
+    PortfolioAsset cardPortfolioAsset = _homeCardList[editIndex].portfolioAsset;
+
+    _homeCardList[editIndex] = HomeCardWidget(portfolioAsset: portfolioAsset, fnetData: cardFnet);
+
+    _portfolioList[editIndex] = portfolioAsset;
+
+    //Novo - Antigo
+    _totalEarnings += ( (portfolioAsset.amount * cardFnet.dividend) - (cardPortfolioAsset.amount * cardFnet.dividend));
     notifyListeners();
 
     portfolioProvider.editAssetFromPorfolio(portfolioAsset);

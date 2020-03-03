@@ -7,8 +7,8 @@ class HomeCardWidget extends StatelessWidget {
   const HomeCardWidget({Key key, this.portfolioAsset, this.fnetData})
       : super(key: key);
 
-final PortfolioAsset portfolioAsset;
-final FNET fnetData;
+  final PortfolioAsset portfolioAsset;
+  final FNET fnetData;
 
   @override
   Widget build(BuildContext context) {
