@@ -2,6 +2,7 @@
 
 
 import 'package:minerva_investimentos/models/asset_model.dart';
+import 'package:minerva_investimentos/models/fnet_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -29,6 +30,18 @@ void populateDb(Database database, int version) async {
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "ticker TEXT,"
           "amount INT"
+          ")");
+
+  
+  await database.execute("CREATE TABLE fnet ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "infoDate TEXT,"
+          "baseDate TEXT,"
+          "paymentDate TEXT,"
+          "dividend REAL,"
+          "referenceDate TEXT,"
+          "year TEXT,"
+          "ticker TEXT"
           ")");
 }
 
@@ -68,7 +81,7 @@ Future<List> queryAssetTable() async {
 
   var result = await db.query("asset", columns: ["id", "name", "ticker", "fund"]);
 
-  db.close();
+  //db.close();
 
   return result.toList();
 }
@@ -89,7 +102,7 @@ Future<List> getCustomers() async {
      Portfolio
 */
 Future<List<int>> insertPortfolioAsset(PortfolioAsset asset) async {
-  Database db = await createDatabase();
+  Database db = await createDatabase(); 
 
   List<int> result = List<int>();
 
@@ -155,5 +168,60 @@ Future<List<Map<String, dynamic>>> queryPortfolioTable() async
       throw Exception(e);
     }
   }
+
+/*
+     FNET
+*/
+Future<List<int>> insertFnet(FNET fnet) async {
+  Database db = await createDatabase();
+
+  List<int> result = List<int>();
+
+  result.add( await db.insert("fnet", fnet.toMap()) );
+ 
+  await db.close();
+  return result;
+}
+
+Future<List<Map<String, dynamic>>> queryAllFnetTable() async 
+{
+  try
+  {
+    Database db = await createDatabase();
+
+    var result = await db.query("fnet", columns: ["id","infoDate","baseDate","paymentDate","dividend","referenceDate","year","ticker"]);
+  
+    //await db.close();
+
+  return result.toList();
+  }
+  catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    }
+  }
+
+Future<List<Map<String, dynamic>>> queryFnetTable(String asset) async 
+{
+  try
+  {
+    Database db = await createDatabase();
+
+    var result = await db.query("fnet", columns: ["id","infoDate","baseDate","paymentDate","dividend","referenceDate","year","ticker"],
+                                        where: "ticker = ?", whereArgs: [asset]);
+  
+    //await db.close();
+
+  return result.toList();
+  }
+  catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  
 
 }
