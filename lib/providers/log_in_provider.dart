@@ -4,7 +4,9 @@ import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:minerva_investimentos/data/db_data.dart';
 import 'package:minerva_investimentos/data/local_data.dart';
+import 'package:minerva_investimentos/data/marked_data.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
+import 'package:minerva_investimentos/providers/alpha_vantage_provider.dart';
 import 'package:minerva_investimentos/utils/router.dart';
 import 'package:path/path.dart';
 
@@ -54,6 +56,7 @@ class LogInProvider extends ChangeNotifier {
 
   //Altera visibilidade do campo de senha
   Future<void> toggleObscurePassword() async {
+
     _obscurePassword ^= true;
 
     if (_obscurePassword == true) {
