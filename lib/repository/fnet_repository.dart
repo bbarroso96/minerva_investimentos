@@ -47,7 +47,8 @@ class FnetRepository
           //Verifica se o ativo do documento está correto
           //Pode ser o XPTO3 etc
           //Queremos XPTO11
-          bool isValid = response.contains(asset+"11");  
+          //bool isValid = response.contains(asset+"11");
+          bool isValid = !response.contains(asset+"13");  
 
           //Caso seja o documento certo, sai do loop
           if(isValid) {break;}

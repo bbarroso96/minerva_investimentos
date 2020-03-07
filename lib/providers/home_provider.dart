@@ -36,6 +36,10 @@ class HomeProvider extends ChangeNotifier
   {
     //Recupera portifólio
     _portfolioList = await portfolioProvider.getPortfolio();
+    FNET fnetDummy = FNET();
+    fnetDummy.dividend = 0.0;
+    _fnetList = List.filled(_portfolioList.length, fnetDummy);
+    notifyListeners();
 
 
     //Recupera dados dos dividendos diretamente do site
