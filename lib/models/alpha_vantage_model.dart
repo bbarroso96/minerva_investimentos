@@ -149,4 +149,31 @@ class AlphaVantageIntraDay
     );
   }
 }
- 
+
+
+ class AlphaVantageDate
+{
+  MetadataDaily metadata;
+
+  TimeSeries timeSeries;
+
+  AlphaVantageDate({
+    this.metadata,
+    this.timeSeries
+  });
+
+  
+  factory AlphaVantageDate.fromJson(Map<String, dynamic> data, String date)
+  {
+    TimeSeries timeSeries = TimeSeries();
+
+    LinkedHashMap linkedHashMap =  LinkedHashMap.from(data["Time Series (Daily)"]);
+
+    timeSeries = linkedHashMap[date];
+
+   return AlphaVantageDate(
+      metadata: MetadataDaily.fromJson(data["Meta Data"]),
+      timeSeries: timeSeries,
+    );
+  }
+}

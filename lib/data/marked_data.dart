@@ -26,7 +26,7 @@ class MarketData
     }
   }
 
-    Future<String> alphaVantageIntraDay(String ticker, ) async
+  Future<String> alphaVantageIntraDay(String ticker ) async
   {
     try
     {

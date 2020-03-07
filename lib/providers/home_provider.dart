@@ -2,8 +2,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/data/db_data.dart';
+import 'package:minerva_investimentos/models/alpha_vantage_model.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/models/fnet_model.dart';
+import 'package:minerva_investimentos/providers/alpha_vantage_provider.dart';
 import 'package:minerva_investimentos/providers/asset_provider.dart';
 import 'package:minerva_investimentos/providers/portfolio_provider.dart';
 import 'package:minerva_investimentos/repository/fnet_repository.dart';
@@ -13,6 +15,7 @@ class HomeProvider extends ChangeNotifier
 {
   final AssetProvider assetProvider;
   final BuildContext context;
+   AlphaVantageProvider aplhaVantageProvider =  AlphaVantageProvider();
 
   PortfolioProvider portfolioProvider = PortfolioProvider();
   List<PortfolioAsset> _portfolioList = List<PortfolioAsset>();
@@ -41,12 +44,11 @@ class HomeProvider extends ChangeNotifier
     _fnetList = List.filled(_portfolioList.length, fnetDummy);
     notifyListeners();
 
-
     //Recupera dados dos dividendos diretamente do site
     //TODO: implemenetar chek no bd, toda a logica pra não iir na url sem necessidade, etc
     List<String> porfolioAssetLIst = List.from(_portfolioList.map((f) => f.ticker));
     _fnetList = await _fnetRepository.fnetList( porfolioAssetLIst );
-
+    
     //Calcula o valor total dos dividendos
     int i = 0;
     for (PortfolioAsset asset in _portfolioList)
@@ -56,6 +58,17 @@ class HomeProvider extends ChangeNotifier
     }   
 
     notifyListeners();
+
+
+
+
+    //TODO:
+    //Nem todas as datas estão disponíveis no alphaVantage
+    //vai ter q pegar a mais proxima
+    //var a = await aplhaVantageProvider.getAlphaVantageDay(_fnetList[0].ticker, _fnetList[0].baseDate);
+
+   //List<AlphaVantageDaily> alphaVantageDailyList = await aplhaVantageProvider.getAlphaVantageDailyList(porfolioAssetLIst);
+   //List<AlphaVantageIntraDay> alphaVantageIntraDayList = await aplhaVantageProvider.getAlphaVantageIntraDayList(porfolioAssetLIst);
   }
 
   //TODO: atualizar o valor total dos dividendos com o add, edit, exclui, etc;
