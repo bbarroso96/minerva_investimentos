@@ -5,6 +5,7 @@
 
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/models/fnet_model.dart';
+import 'package:minerva_investimentos/models/investing_model.dart';
 
 class Functions
 {
@@ -65,6 +66,28 @@ class Functions
     fnet.year =  fnetData[5].group(1);
 
     return fnet;
+  }
+
+  InvestingDayValue regexInvestingDate(String data)
+  {
+    InvestingDayValue investingDayValue = InvestingDayValue();
+
+    //Define ReGex a ser utilizado para recuperar as informações do arquivo FNET
+    RegExp regexFnet = RegExp(
+      ">(.+)<\/td>"
+    );
+    
+    List<String> a = List<String>();
+
+    List<RegExpMatch> regexData = regexFnet.allMatches(data).toList(); 
+
+    investingDayValue.date =  regexData[0].group(1);
+    investingDayValue.price =  regexData[1].group(1);
+    investingDayValue.open =  regexData[2].group(1);
+    investingDayValue.high =  regexData[3].group(1);
+    investingDayValue.low =  regexData[4].group(1);
+      
+    return investingDayValue;
   }
   
 }

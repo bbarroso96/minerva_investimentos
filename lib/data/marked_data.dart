@@ -8,7 +8,7 @@ import 'package:minerva_investimentos/models/asset_model.dart';
 class MarketData
 {
 
-  Future<String> getInVestingDayValue() async
+  Future<String> getInVestingDayValue(String ticker, String day, String month, String year) async
   {
     try
     {
@@ -21,7 +21,7 @@ class MarketData
         
       //String _body = '{"title": "Hello", "body": "body text", "userId": 1}';
 
-      var post = await http.post(_url, headers: headers, body: "curr_id=940960&smlID=1506460&header=MXRF11+Historical+Data&st_date=03%2F06%2F2020&end_date=03%2F06%2F2020&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data");
+      var post = await http.post(_url, headers: headers, body: "curr_id=940960&smlID=1506460&header="+ticker.toUpperCase()+"11+Historical+Data&st_date="+month+"%2F"+day+"%2F"+year+"&end_date="+month+"%2F"+day+"%2F"+year+"&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data");
 
       return post.body;
     }

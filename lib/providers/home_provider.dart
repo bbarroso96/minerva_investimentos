@@ -6,10 +6,13 @@ import 'package:minerva_investimentos/data/marked_data.dart';
 import 'package:minerva_investimentos/models/alpha_vantage_model.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/models/fnet_model.dart';
+import 'package:minerva_investimentos/models/investing_model.dart';
 import 'package:minerva_investimentos/providers/alpha_vantage_provider.dart';
 import 'package:minerva_investimentos/providers/asset_provider.dart';
+import 'package:minerva_investimentos/providers/investing_provider.dart';
 import 'package:minerva_investimentos/providers/portfolio_provider.dart';
 import 'package:minerva_investimentos/repository/fnet_repository.dart';
+import 'package:minerva_investimentos/utils/functions.dart';
 import 'package:minerva_investimentos/widgets/homeCard.dart';
 
 class HomeProvider extends ChangeNotifier
@@ -17,6 +20,7 @@ class HomeProvider extends ChangeNotifier
   final AssetProvider assetProvider;
   final BuildContext context;
    AlphaVantageProvider aplhaVantageProvider =  AlphaVantageProvider();
+   InvestingProvider investingProvider = InvestingProvider();
 
   PortfolioProvider portfolioProvider = PortfolioProvider();
   List<PortfolioAsset> _portfolioList = List<PortfolioAsset>();
@@ -24,6 +28,7 @@ class HomeProvider extends ChangeNotifier
 
   FnetRepository _fnetRepository = FnetRepository();
   List<FNET> _fnetList = List<FNET>();
+  List<InvestingDayValue> _investingDayValueList = List<InvestingDayValue>();
 
   String _enteredAsset;
   String _enteredAmount;
@@ -41,8 +46,10 @@ class HomeProvider extends ChangeNotifier
     //Recupera portifólio
     _portfolioList = await portfolioProvider.getPortfolio();
     FNET fnetDummy = FNET();
+    InvestingDayValue investingDayValueDummy = InvestingDayValue();
     fnetDummy.dividend = 0.0;
     _fnetList = List.filled(_portfolioList.length, fnetDummy);
+    _investingDayValueList = List.filled(_portfolioList.length, investingDayValueDummy);
     notifyListeners();
 
     //Recupera dados dos dividendos diretamente do site
@@ -70,8 +77,9 @@ class HomeProvider extends ChangeNotifier
 
    //List<AlphaVantageDaily> alphaVantageDailyList = await aplhaVantageProvider.getAlphaVantageDailyList(porfolioAssetLIst);
    //List<AlphaVantageIntraDay> alphaVantageIntraDayList = await aplhaVantageProvider.getAlphaVantageIntraDayList(porfolioAssetLIst);
-   MarketData sad  = MarketData();
-   var das = sad.getInVestingDayValue();
+  
+    List<InvestingDayValue> investingDayValueList = await investingProvider.getInVestingDayValue(porfolioAssetLIst, _fnetList);
+    print('object');
   }
 
   //TODO: atualizar o valor total dos dividendos com o add, edit, exclui, etc;
@@ -213,6 +221,8 @@ class HomeProvider extends ChangeNotifier
    List<PortfolioAsset> get portfolioList => _portfolioList;
 
    List<FNET> get fnetList => _fnetList;
+
+   List<InvestingDayValue> get investingDayValue => _investingDayValueList;
 
    double get totalEarnings => _totalEarnings;
 }

@@ -138,7 +138,7 @@ class HomeCardWidget extends StatelessWidget {
               children: <Widget>[
                 ticker
                 ,dividend
-                ,averagePrice
+                //,averagePrice
                 ,stockValue
                ],
             ),
