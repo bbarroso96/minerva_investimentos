@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/data/db_data.dart';
+import 'package:minerva_investimentos/data/marked_data.dart';
 import 'package:minerva_investimentos/models/alpha_vantage_model.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/models/fnet_model.dart';
@@ -69,6 +70,8 @@ class HomeProvider extends ChangeNotifier
 
    //List<AlphaVantageDaily> alphaVantageDailyList = await aplhaVantageProvider.getAlphaVantageDailyList(porfolioAssetLIst);
    //List<AlphaVantageIntraDay> alphaVantageIntraDayList = await aplhaVantageProvider.getAlphaVantageIntraDayList(porfolioAssetLIst);
+   MarketData sad  = MarketData();
+   var das = sad.getInVestingDayValue();
   }
 
   //TODO: atualizar o valor total dos dividendos com o add, edit, exclui, etc;
