@@ -9,31 +9,50 @@ void main() => runApp(MyApp());
 /* 
 TODO:
 
-   -- shared_preferences para salvar PIN
-
   -- Implementar PIN:
-  -- Alteração de PIN
-  -- Acesso com digital no lugar do PIN
+  -- null
 
   --OK:
       -- Salvar PIN caso não exisa um na memória (primiero login)
       -- Recuperar PIN e autenticar usuário
       -- Esconder/Mostrar campo de senha
+      -- Alteração de PIN
+      -- Acesso com digital no lugar do PIN
+      -- shared_preferences para salvar PIN
       
       
 
   
   -- Implementar SQLite
+  -- null
+
+  --OK:
       -- Tabela para salvar a lista de ativos
       -- Tabela para salvar cada importação da FNET sobre os dividendos
 
 
-  -- Implementar acesso a API da Alpha Vantage
+  --OK (problema):
+    -- Apenas 5 get por min, não atende
+    -- Implementar acesso a API da Alpha Vantage
     -- Recupera dados intraday
 
+  --OK:
+    burla o alpha pegando os dados do Investing.com
+    -- Acessa o dia base do dividendo para calcular rentabilidade
+    -- Acessa o último dia útil para pegar o valor atual do mercado
 
   OBS: onde salvar valor de abertura/fechamento do mercado?
     -- Muito provavelmente com o prório ativo (Classe de "ASSET")
+
+
+
+  OQ FALTA:
+    -- atualizar periodicamente o valor de mercado
+    -- ou usar o pull to refresh ???
+
+    -- armazenar os dados do ultimo dividendo para pegar junto
+
+    -- !!! logica para verificar se é para procurar o documento mais rescente de dividendos
 
 */
 

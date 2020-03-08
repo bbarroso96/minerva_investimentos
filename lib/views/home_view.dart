@@ -50,7 +50,7 @@ class HomeView extends StatelessWidget {
                         style: TextStyle(fontSize: 15, color: Colors.white)),
                     preferredSize: null)),
             body: ListView.builder(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0) ,
               itemCount: provider.portfolioList.length,
               itemBuilder: (context, int index) {
                 return Dismissible(
@@ -214,20 +214,21 @@ class HomeView extends StatelessWidget {
                                 icon: Icon(Icons.check),
                                 onPressed: () async {
 
-                                  String submitError = await provider.submitAsset();
+                                  String isValid = await provider.validadeSubmitAsset();
 
                                   //Caso a validação retorne erro
                                   //Notifica o usuário com o erro
-                                  if (submitError != "OK") {
+                                  if (isValid != "OK") {
                                       Flushbar(
                                         //  title: "Ativo inválido",
-                                        message: submitError,
+                                        message: isValid,
                                         duration: Duration(seconds: 1),
                                       )..show(context);                                   
                                   }
                                   else 
                                   {
                                     Navigator.pop(context);
+                                    String submitError = await provider.submitAsset();
                                   }
                                 }))
                       ],

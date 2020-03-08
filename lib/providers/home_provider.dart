@@ -89,19 +89,20 @@ class HomeProvider extends ChangeNotifier
     
   }
 
-  //TODO: atualizar o valor total dos dividendos com o add, edit, exclui, etc;
+ 
 
-
-  //Adiciona o ativo escolhida a lista de ativos
+  //////////////////////////////////////////////////////////////////
+  ///Adiciona o ativo escolhida a lista de ativos
+  /////////////////////////////////////////////////////////////////
   Future<String> submitAsset() async
   {
     print('Submit asset: ');
     print(_enteredAsset); 
     print(_enteredAmount);
 
-    var isValid = await _validadeSubmitAsset();
+    //var isValid = await validadeSubmitAsset();
     
-    if(isValid != "OK") {return isValid;}
+    //if(isValid != "OK") {return isValid;}
 
     //Constroi o ativo novo
     PortfolioAsset portfolioAsset = PortfolioAsset();
@@ -109,9 +110,16 @@ class HomeProvider extends ChangeNotifier
     portfolioAsset.amount = int.parse(_enteredAmount);
     _portfolioList.add(portfolioAsset);
 
+    //Adiciona um fnet vazio
     FNET fnet = FNET();
     fnet.dividend = 0.0;
     _fnetList.add(fnet);
+
+    //Adiciona valores do ativo
+    InvestingCurrentValue investingCurrentValue = InvestingCurrentValue();
+    InvestingDayValue investingDayValue = InvestingDayValue();
+    _investingCurrentValueList.add(investingCurrentValue);
+    _investingDayValueList.add(investingDayValue);
 
     notifyListeners();
 
@@ -119,11 +127,68 @@ class HomeProvider extends ChangeNotifier
     portfolioProvider.addToPortfolio(portfolioAsset);
 
     //Redundandte passar "_enteredAsset"
-    updateFnet([_enteredAsset]);
+    var a = await updateFnet([_enteredAsset]);
 
-    return isValid;
+    //Atualiza o valor do ativo
+    updateCurrentValue([_enteredAsset]);
+
+    //Atualiza o valor do dia do dividendo
+    //TODO: essa logica provavelmente vai morar dentro do fnet
+    updateDayValue([_enteredAsset]);
+
+    return "OK";
   }
 
+  //////////////////////////////////////////////////////////////////
+  ///Atualiza a lista de investingDayValue
+  /////////////////////////////////////////////////////////////////
+  Future<bool> updateDayValue(List<String> asset) async
+  {
+    //Recupera fnet por ativo
+    List<FNET> _fnet = await _fnetRepository.fnetList(asset);
+
+    //Recupera os valores do rendimendo do dia
+    List<InvestingDayValue> _investingDayUpdate = await investingProvider.getInVestingDayValue(asset, _fnet);
+
+    int i = 0;
+    for (InvestingDayValue investingDay in _investingDayUpdate)
+    {
+      int updateIndex = _portfolioList.indexWhere((f) => f.ticker == asset[i]);
+
+      _investingDayValueList[updateIndex] = investingDay;
+
+      notifyListeners();
+
+     i++;
+    }
+    return true;
+  }
+
+
+  //////////////////////////////////////////////////////////////////
+  ///Atualiza a lista de investingCurrentValue
+  /////////////////////////////////////////////////////////////////
+  void updateCurrentValue(List<String> asset) async
+  {
+    //Recupera os valores do rendimendo do dia
+    List<InvestingCurrentValue> _investingurrentUpdate = await investingProvider.getInVestingCurrentValue(asset);
+
+    int i = 0;
+    for (InvestingCurrentValue investingCurrent in _investingurrentUpdate)
+    {
+      int updateIndex = _portfolioList.indexWhere((f) => f.ticker == asset[i]);
+
+      _investingCurrentValueList[updateIndex] = investingCurrent;
+
+      notifyListeners();
+
+     i++;
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////
+  ///Atualiza a lista de FNET
+  /////////////////////////////////////////////////////////////////
   void updateFnet(List<String> asset) async
   {
     //Recupera os dividendos por ativo
@@ -145,8 +210,10 @@ class HomeProvider extends ChangeNotifier
     }
   }
 
-  //Valida inserção do ativo no portifolio
-  Future<String> _validadeSubmitAsset() async
+  //////////////////////////////////////////////////////////////////
+  ///Valida inserção do ativo no portifolio
+  /////////////////////////////////////////////////////////////////
+  Future<String> validadeSubmitAsset() async
   {
     //Verifica se a quantidade não é nula
     if(_enteredAsset.isEmpty)
@@ -187,6 +254,9 @@ class HomeProvider extends ChangeNotifier
 
   }
 
+  //////////////////////////////////////////////////////////////////
+  ///Remove ativo
+  /////////////////////////////////////////////////////////////////
   void removeAsset(int removeIndex)
   {
     //Atualiza o valor total dos dividendos
@@ -200,9 +270,18 @@ class HomeProvider extends ChangeNotifier
     //Atualiza a lista de fnet
     _fnetList.remove(_fnetList[removeIndex]);
 
+    //Atualiza a lista de investingDay
+    _investingDayValueList.remove(_investingDayValueList[removeIndex]);
+
+    //Atualiza a lista de investingValue
+    _investingCurrentValueList.remove(_investingCurrentValueList[removeIndex]);
+
     notifyListeners();
   }
 
+  //////////////////////////////////////////////////////////////////
+  ///Edita Ativo
+  /////////////////////////////////////////////////////////////////
   void editAsset(int editIndex)
   {
     print('Edit asset: ');
@@ -219,6 +298,9 @@ class HomeProvider extends ChangeNotifier
     portfolioProvider.editAssetFromPorfolio(_portfolioList[editIndex]);
   }
 
+  //////////////////////////////////////////////////////////////////
+  ///Get e set
+  /////////////////////////////////////////////////////////////////
    String get enteredAsset => _enteredAsset;
    void set enteredAsset(String asset)=> _enteredAsset = asset;
 
