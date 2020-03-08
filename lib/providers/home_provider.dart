@@ -29,6 +29,7 @@ class HomeProvider extends ChangeNotifier
   FnetRepository _fnetRepository = FnetRepository();
   List<FNET> _fnetList = List<FNET>();
   List<InvestingDayValue> _investingDayValueList = List<InvestingDayValue>();
+  List<InvestingCurrentValue> _investingCurrentValueList = List<InvestingCurrentValue>();
 
   String _enteredAsset;
   String _enteredAmount;
@@ -47,9 +48,11 @@ class HomeProvider extends ChangeNotifier
     _portfolioList = await portfolioProvider.getPortfolio();
     FNET fnetDummy = FNET();
     InvestingDayValue investingDayValueDummy = InvestingDayValue();
+    InvestingCurrentValue investingCurrentValueDummy = InvestingCurrentValue();
     fnetDummy.dividend = 0.0;
     _fnetList = List.filled(_portfolioList.length, fnetDummy);
     _investingDayValueList = List.filled(_portfolioList.length, investingDayValueDummy);
+    _investingCurrentValueList = List.filled(_portfolioList.length, investingCurrentValueDummy);
     notifyListeners();
 
     //Recupera dados dos dividendos diretamente do site
@@ -78,8 +81,12 @@ class HomeProvider extends ChangeNotifier
    //List<AlphaVantageDaily> alphaVantageDailyList = await aplhaVantageProvider.getAlphaVantageDailyList(porfolioAssetLIst);
    //List<AlphaVantageIntraDay> alphaVantageIntraDayList = await aplhaVantageProvider.getAlphaVantageIntraDayList(porfolioAssetLIst);
   
-    List<InvestingDayValue> investingDayValueList = await investingProvider.getInVestingDayValue(porfolioAssetLIst, _fnetList);
-    print('object');
+    _investingDayValueList = await investingProvider.getInVestingDayValue(porfolioAssetLIst, _fnetList);
+    notifyListeners();
+
+    _investingCurrentValueList = await investingProvider.getInVestingCurrentValue(porfolioAssetLIst);
+    notifyListeners();
+    
   }
 
   //TODO: atualizar o valor total dos dividendos com o add, edit, exclui, etc;
@@ -223,6 +230,8 @@ class HomeProvider extends ChangeNotifier
    List<FNET> get fnetList => _fnetList;
 
    List<InvestingDayValue> get investingDayValue => _investingDayValueList;
+
+   List<InvestingCurrentValue> get investingCurrentValue => _investingCurrentValueList;
 
    double get totalEarnings => _totalEarnings;
 }

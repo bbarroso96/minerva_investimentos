@@ -57,7 +57,10 @@ class HomeView extends StatelessWidget {
                   //child: provider.homeCardWidgetList[index],
                   child: HomeCardWidget(
                                           portfolioAsset: provider.portfolioList[index], 
-                                          fnetData: provider.fnetList[index]
+                                          fnetData: provider.fnetList[index],
+                                          investingDayValue: provider.investingDayValue[index],
+                                          investingCurrentValue: provider.investingCurrentValue[index],
+
                                         ),
 
                   //Swipe para a direita (CONFIG)

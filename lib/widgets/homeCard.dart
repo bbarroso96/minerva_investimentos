@@ -3,14 +3,17 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:minerva_investimentos/models/asset_model.dart';
 import 'package:minerva_investimentos/models/fnet_model.dart';
+import 'package:minerva_investimentos/models/investing_model.dart';
 
 class HomeCardWidget extends StatelessWidget {
 
-  const HomeCardWidget({Key key, this.portfolioAsset, this.fnetData})
+  const HomeCardWidget({Key key, this.portfolioAsset, this.fnetData, this.investingDayValue, this.investingCurrentValue})
       : super(key: key);
 
   final PortfolioAsset portfolioAsset;
   final FNET fnetData;
+  final InvestingDayValue investingDayValue;
+  final InvestingCurrentValue investingCurrentValue;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class HomeCardWidget extends StatelessWidget {
           TextSpan(text: " x" + portfolioAsset.assetAmount.toString(),
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
           ),
-          TextSpan(text: "\nProvento: " + "0,52%",
+          TextSpan(text: "\nProvento: " + (double.parse(investingDayValue.price) * fnetData.dividend /100  ).toStringAsFixed(2) +"%",
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
           ),
         ]
@@ -95,16 +98,21 @@ class HomeCardWidget extends StatelessWidget {
         style: DefaultTextStyle.of(context).style,
         children: <TextSpan>
         [
-          TextSpan(text: "\$" + mockstock.toStringAsFixed(2),
+          TextSpan(text: "\$" + investingCurrentValue.price,
             style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
           ),
           TextSpan(text: " | ",
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
           ),
-          TextSpan(text: "+"+mockstockGain.toString()+"%",
-            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12, color: Colors.green)
+          //open - 100%
+          //var - x%
+          //x = var * 100 / open
+          TextSpan(text: (double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open)) > 0 ? "+" : "-" 
+                        +( ( double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open) )/double.parse(investingCurrentValue.open)*100  ).toStringAsFixed(2)
+                        +"%",
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12, color: (double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open)) > 0 ? Colors.green : Colors.red)
           ),
-          TextSpan(text: "\nAbertura: "+ mockPrice.toString(),
+          TextSpan(text: "\nAbertura: "+ investingCurrentValue.open,
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 12 )
           ),
         ]
@@ -137,9 +145,9 @@ class HomeCardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 ticker
-                ,dividend
                 //,averagePrice
                 ,stockValue
+                ,dividend
                ],
             ),
             Divider(),

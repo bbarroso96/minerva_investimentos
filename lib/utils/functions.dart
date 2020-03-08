@@ -89,5 +89,27 @@ class Functions
       
     return investingDayValue;
   }
+
+  InvestingCurrentValue regexInvestingValue(String data)
+  {
+    InvestingCurrentValue investingCurrentValue = InvestingCurrentValue();
+
+    //Define ReGex a ser utilizado para recuperar as informações do arquivo FNET
+    RegExp regexFnet = RegExp(
+      ">(.+)<\/td>"
+    );
+    
+    List<String> a = List<String>();
+
+    List<RegExpMatch> regexData = regexFnet.allMatches(data).toList(); 
+
+    investingCurrentValue.date =  regexData[0].group(1);
+    investingCurrentValue.price =  regexData[1].group(1);
+    investingCurrentValue.open =  regexData[2].group(1);
+    investingCurrentValue.high =  regexData[3].group(1);
+    investingCurrentValue.low =  regexData[4].group(1);
+      
+    return investingCurrentValue;
+  }
   
 }

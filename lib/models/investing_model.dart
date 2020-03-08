@@ -4,15 +4,32 @@ class InvestingDayValue
 {
   String date = "date";
 
-  String price = "price";
+  String price = "0.0";
 
-  String open = "open";
+  String open = "0.0";
 
-  String high = "high";
+  String high = "0.0";
 
-  String low = "low";
+  String low = "0.0";
 
-  String volume = "volume";
+  String volume = "0";
 
-  String change = "volume";
+  String change = "0";
+}
+
+class InvestingCurrentValue
+{
+  String date = "date";
+
+  String price = "0.0";
+
+  String open = "0.0";
+
+  String high = "0.0";
+
+  String low = "0.0";
+
+  String volume = "0";
+
+  String change = "0";
 }

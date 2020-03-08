@@ -35,4 +35,28 @@ class InvestingProvider
      return investingDayValueList;
    }
 
+   Future<List<InvestingCurrentValue>> getInVestingCurrentValue(List<String> tickerList) async
+   {
+     List<InvestingCurrentValue> investingCurrentValueList = List<InvestingCurrentValue>();
+
+     int i = 0;
+     for (String ticker in tickerList)
+     {
+        String year = DateTime.now().year.toString();
+        String month = DateTime.now().month.toString();
+        String day = DateTime.now().day.toString();       
+
+        String response = await _marketData.getInVestingCurrentValue(ticker, day, month, year);
+
+        InvestingCurrentValue investingCurrentValue = _functions.regexInvestingValue(response);
+
+        investingCurrentValueList.add(investingCurrentValue);
+
+        i++;
+     }
+      print('object');
+     return investingCurrentValueList;
+   }
+
+
 }
