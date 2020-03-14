@@ -86,7 +86,7 @@ class HomeProvider extends ChangeNotifier
 
     _investingCurrentValueList = await investingProvider.getInvestingCurrentValue(porfolioAssetLIst);
     notifyListeners();
-    
+
   }
 
  

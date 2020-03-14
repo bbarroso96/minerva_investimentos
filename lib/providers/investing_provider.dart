@@ -26,7 +26,24 @@ class InvestingProvider
         String month = date.substring(3, 5);
         String day = date.substring(0, 2);      
 
-        String pairId = await _marketData.getInvesingTickerId(ticker); 
+        BdData db = BdData();
+
+        var query = await db.queryInvestingTable(ticker);
+
+        //Verifica se a query estva vazia
+        //Caso nao esteja, recebe o valor do pairId
+        String pairId = query.isEmpty ? "" : query[0]["pairId"];
+
+        //Recup0era o pairId do ativo
+        //Procura no BD
+        //Caso não exista, acessa o site e insere no bd
+        if(pairId.isEmpty || pairId == null)
+        {
+          pairId  = await _marketData.getInvesingTickerId(ticker);
+
+          List<int> insertIndex = await  db.insertInvesting(ticker, pairId);
+        }       
+
 
         String response = await _marketData.getInvestingDayValue(ticker, day, month, year, pairId);
 

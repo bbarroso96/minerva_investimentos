@@ -114,7 +114,7 @@ class HomeView extends StatelessWidget {
                     },
                   );
                 },
-              ), onRefresh: () { return provider.refreshValue();},
+              ), onRefresh: () {return provider.refreshValue();},
             ),
             /*
               bottomNavigationBar: BottomNavigationBar(items: [
