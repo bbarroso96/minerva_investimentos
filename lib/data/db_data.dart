@@ -43,6 +43,12 @@ void populateDb(Database database, int version) async {
           "year TEXT,"
           "ticker TEXT"
           ")");
+
+   await database.execute("CREATE TABLE investing ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "ticker TEXT,"
+          "pairId TEXT"
+          ")");
 }
 
 Future<List<int>> createCustomer(List<B3Asset> asset) async {
@@ -98,9 +104,10 @@ Future<List> getCustomers() async {
   return result.toList();
 }
 
-/*
-     Portfolio
-*/
+
+//////////////////////////////////////////////////////////////////
+//     Portfolio
+//////////////////////////////////////////////////////////////////
 Future<List<int>> insertPortfolioAsset(PortfolioAsset asset) async {
   Database db = await createDatabase(); 
 
@@ -169,9 +176,9 @@ Future<List<Map<String, dynamic>>> queryPortfolioTable() async
     }
   }
 
-/*
-     FNET
-*/
+//////////////////////////////////////////////////////////////////
+///     FNET
+//////////////////////////////////////////////////////////////////
 Future<List<int>> insertFnet(FNET fnet) async {
   Database db = await createDatabase();
 
@@ -223,5 +230,54 @@ Future<List<Map<String, dynamic>>> queryFnetTable(String asset) async
   }
 
   
+
+//////////////////////////////////////////////////////////////////
+/// investing.com
+//////////////////////////////////////////////////////////////////
+Future<List<Map<String, dynamic>>> queryInvestingTable(String asset) async 
+{
+  try
+  {
+    Database db = await createDatabase();
+
+    var result = await db.query("investing", columns: ["id","ticker","pairId"],
+                                        where: "ticker = ?", whereArgs: [asset]);
+  
+    //await db.close();
+
+  return result.toList();
+  }
+  catch(e)
+    {
+      print(e.toString());
+      throw Exception(e);
+    }
+  }
+
+Future<List<int>> insertInvesting(String ticker, String pairId) async {
+  Database db = await createDatabase();
+
+  List<int> result = List<int>();
+
+  Map<String, dynamic> investingMap = Map();
+  investingMap["ticker"] = ticker;
+  investingMap["pairId"] = pairId;
+
+  result.add( await db.insert("investing", investingMap) );
+ 
+  await db.close();
+  return result;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -81,10 +81,10 @@ class HomeProvider extends ChangeNotifier
    //List<AlphaVantageDaily> alphaVantageDailyList = await aplhaVantageProvider.getAlphaVantageDailyList(porfolioAssetLIst);
    //List<AlphaVantageIntraDay> alphaVantageIntraDayList = await aplhaVantageProvider.getAlphaVantageIntraDayList(porfolioAssetLIst);
   
-    _investingDayValueList = await investingProvider.getInVestingDayValue(porfolioAssetLIst, _fnetList);
+    _investingDayValueList = await investingProvider.getInvestingDayValue(porfolioAssetLIst, _fnetList);
     notifyListeners();
 
-    _investingCurrentValueList = await investingProvider.getInVestingCurrentValue(porfolioAssetLIst);
+    _investingCurrentValueList = await investingProvider.getInvestingCurrentValue(porfolioAssetLIst);
     notifyListeners();
     
   }
@@ -148,7 +148,7 @@ class HomeProvider extends ChangeNotifier
     List<FNET> _fnet = await _fnetRepository.fnetList(asset);
 
     //Recupera os valores do rendimendo do dia
-    List<InvestingDayValue> _investingDayUpdate = await investingProvider.getInVestingDayValue(asset, _fnet);
+    List<InvestingDayValue> _investingDayUpdate = await investingProvider.getInvestingDayValue(asset, _fnet);
 
     int i = 0;
     for (InvestingDayValue investingDay in _investingDayUpdate)
@@ -165,13 +165,22 @@ class HomeProvider extends ChangeNotifier
   }
 
 
+  Future<void> refreshValue() async
+  {
+    List<String> assetList = List<String>();
+
+    _portfolioList.forEach((f)=> assetList.add(f.ticker));
+
+    updateCurrentValue(assetList);
+  }
+
   //////////////////////////////////////////////////////////////////
   ///Atualiza a lista de investingCurrentValue
   /////////////////////////////////////////////////////////////////
   void updateCurrentValue(List<String> asset) async
   {
     //Recupera os valores do rendimendo do dia
-    List<InvestingCurrentValue> _investingurrentUpdate = await investingProvider.getInVestingCurrentValue(asset);
+    List<InvestingCurrentValue> _investingurrentUpdate = await investingProvider.getInvestingCurrentValue(asset);
 
     int i = 0;
     for (InvestingCurrentValue investingCurrent in _investingurrentUpdate)

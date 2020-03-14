@@ -8,12 +8,14 @@ import 'package:minerva_investimentos/models/asset_model.dart';
 class MarketData
 {
 
-  Future<String> getInVestingDayValue(String ticker, String day, String month, String year) async
+  //Acessa o site do investing.com para recuuperar a "historial data" em uma data específica
+  Future<String> getInvestingDayValue(String ticker, String day, String month, String year, String pairId) async
   {
     try
     {
       String _url = 'https://www.investing.com/instruments/HistoricalDataAjax';
 
+      //Headers necessários
       Map<String, String> headers = {
         "Content-type": " application/x-www-form-urlencoded",
         "X-Requested-With": "XMLHttpRequest"
@@ -21,9 +23,10 @@ class MarketData
         
       //String _body = '{"title": "Hello", "body": "body text", "userId": 1}';
 
-      String _pairId = await _getTickerId(ticker);
+      //Recupera a chave do ativo usada no site
+     // String _pairId = await _getTickerId(ticker);
 
-      var post = await http.post(_url, headers: headers, body: "curr_id="+_pairId+"&smlID=1506460&header="+ticker.toUpperCase()+"11+Historical+Data&st_date="+month+"%2F"+day+"%2F"+year+"&end_date="+month+"%2F"+day+"%2F"+year+"&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data");
+      var post = await http.post(_url, headers: headers, body: "curr_id="+pairId+"&smlID=1506460&header="+ticker.toUpperCase()+"11+Historical+Data&st_date="+month+"%2F"+day+"%2F"+year+"&end_date="+month+"%2F"+day+"%2F"+year+"&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data");
 
       return post.body;
     }
@@ -34,13 +37,14 @@ class MarketData
     }
   }
 
-
-Future<String> getInVestingCurrentValue(String ticker, String day, String month, String year) async
+  //Acessa o site do investing.com para recuuperar a "historial data" em uma data específica
+  Future<String> getInvestingCurrentValue(String ticker, String day, String month, String year, String pairId) async
   {
     try
     {
       String _url = 'https://www.investing.com/instruments/HistoricalDataAjax';
 
+      //Headers necessários
       Map<String, String> headers = {
         "Content-type": " application/x-www-form-urlencoded",
         "X-Requested-With": "XMLHttpRequest"
@@ -48,7 +52,8 @@ Future<String> getInVestingCurrentValue(String ticker, String day, String month,
         
       //String _body = '{"title": "Hello", "body": "body text", "userId": 1}';
 
-      String _pairId = await _getTickerId(ticker);
+      //Recupera a chave do ativo usada no site
+      //String _pairId = await _getTickerId(ticker);
 
       bool _isValid = false;
 
@@ -57,7 +62,7 @@ Future<String> getInVestingCurrentValue(String ticker, String day, String month,
       //Busca o valor no último dia útil
       while(_isValid != true)
       {
-        post = await http.post(_url, headers: headers, body: "curr_id="+_pairId+"&smlID=1506460&header="+ticker.toUpperCase()+"11+Historical+Data&st_date="+month+"%2F"+day+"%2F"+year+"&end_date="+month+"%2F"+day+"%2F"+year+"&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data");
+        post = await http.post(_url, headers: headers, body: "curr_id="+pairId+"&smlID=1506460&header="+ticker.toUpperCase()+"11+Historical+Data&st_date="+month+"%2F"+day+"%2F"+year+"&end_date="+month+"%2F"+day+"%2F"+year+"&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data");
 
         //Decrementa um dia para procurar um dia útil
         day = (int.parse(day) -1).toString();
@@ -76,9 +81,8 @@ Future<String> getInVestingCurrentValue(String ticker, String day, String month,
   }
 
 
-
-
-    Future<String> _getTickerId(String ticker)async
+    //Acessa o investing.com em um ativo para recuperar a sua chave
+    Future<String> getInvesingTickerId(String ticker)async
     {
       try
       {

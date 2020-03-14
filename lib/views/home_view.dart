@@ -49,70 +49,72 @@ class HomeView extends StatelessWidget {
                             DateTime.now().year.toString(),
                         style: TextStyle(fontSize: 15, color: Colors.white)),
                     preferredSize: null)),
-            body: ListView.builder(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0) ,
-              itemCount: provider.portfolioList.length,
-              itemBuilder: (context, int index) {
-                return Dismissible(
-                  //child: provider.homeCardWidgetList[index],
-                  child: HomeCardWidget(
-                                          portfolioAsset: provider.portfolioList[index], 
-                                          fnetData: provider.fnetList[index],
-                                          investingDayValue: provider.investingDayValue[index],
-                                          investingCurrentValue: provider.investingCurrentValue[index],
+            body: RefreshIndicator(
+                          child: ListView.builder(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0) ,
+                itemCount: provider.portfolioList.length,
+                itemBuilder: (context, int index) {
+                  return Dismissible(
+                    //child: provider.homeCardWidgetList[index],
+                    child: HomeCardWidget(
+                                            portfolioAsset: provider.portfolioList[index], 
+                                            fnetData: provider.fnetList[index],
+                                            investingDayValue: provider.investingDayValue[index],
+                                            investingCurrentValue: provider.investingCurrentValue[index],
 
-                                        ),
+                                          ),
 
-                  //Swipe para a direita (CONFIG)
-                  background: Card(
-                    color: Colors.blueGrey,
-                    child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          child: Icon(Icons.settings),
-                          padding: const EdgeInsets.only(left: 10),
-                        )),
-                  ),
+                    //Swipe para a direita (CONFIG)
+                    background: Card(
+                      color: Colors.blueGrey,
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            child: Icon(Icons.settings),
+                            padding: const EdgeInsets.only(left: 10),
+                          )),
+                    ),
 
-                  //Swipe para a esquerda (DELETE)
-                  secondaryBackground: Card(
-                    color: Colors.red,
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          child: Icon(Icons.delete),
-                          padding: const EdgeInsets.only(right: 10),
-                        )),
-                  ),
+                    //Swipe para a esquerda (DELETE)
+                    secondaryBackground: Card(
+                      color: Colors.red,
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            child: Icon(Icons.delete),
+                            padding: const EdgeInsets.only(right: 10),
+                          )),
+                    ),
 
-                  //A key do card é o próprio nome do ativo
-                  key: ValueKey(
-                      provider.portfolioList[index].ticker),
+                    //A key do card é o próprio nome do ativo
+                    key: ValueKey(
+                        provider.portfolioList[index].ticker),
 
-                  confirmDismiss: (direction) async {
-                    //Swipe deletando
-                    if (direction == DismissDirection.endToStart) {
-                      final bool confirm = await _showConfirmDialog(context);
+                    confirmDismiss: (direction) async {
+                      //Swipe deletando
+                      if (direction == DismissDirection.endToStart) {
+                        final bool confirm = await _showConfirmDialog(context);
 
-                      return confirm;
-                    }
-                    //Swipe config
-                    else {
-                      _settingModalBottomSheetEdit(context, provider, index);
-                      return false;
-                    }
-                  },
+                        return confirm;
+                      }
+                      //Swipe config
+                      else {
+                        _settingModalBottomSheetEdit(context, provider, index);
+                        return false;
+                      }
+                    },
 
-                  onDismissed: (direction) async {
-                    //Remove do portifólio o ativo quando o swipe for pra esqueda
-                    if (direction == DismissDirection.endToStart) {
-                      print('Deletando do portifolio: ' +
-                          provider.portfolioList[index].ticker);
-                      provider.removeAsset(index);
-                    }
-                  },
-                );
-              },
+                    onDismissed: (direction) async {
+                      //Remove do portifólio o ativo quando o swipe for pra esqueda
+                      if (direction == DismissDirection.endToStart) {
+                        print('Deletando do portifolio: ' +
+                            provider.portfolioList[index].ticker);
+                        provider.removeAsset(index);
+                      }
+                    },
+                  );
+                },
+              ), onRefresh: () { return provider.refreshValue();},
             ),
             /*
               bottomNavigationBar: BottomNavigationBar(items: [
