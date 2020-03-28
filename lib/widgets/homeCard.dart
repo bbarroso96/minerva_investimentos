@@ -26,7 +26,7 @@ class HomeCardWidget extends StatelessWidget {
     //////////////////////////////////////////////////////////////////////
     ///Monta texto do dividendo
     //////////////////////////////////////////////////////////////////////
-   RichText dividend = RichText(
+    RichText dividend = RichText(
       text: TextSpan(
         style: DefaultTextStyle.of(context).style,
         children: <TextSpan>
@@ -44,6 +44,7 @@ class HomeCardWidget extends StatelessWidget {
     //////////////////////////////////////////////////////////////////////
     ///Monta texto do ticker
     //////////////////////////////////////////////////////////////////////
+    double dividendYeld = fnetData.dividend *100 / double.parse(investingDayValue.price);
     RichText ticker = RichText(
       text: TextSpan(
         style: DefaultTextStyle.of(context).style,
@@ -55,7 +56,7 @@ class HomeCardWidget extends StatelessWidget {
           TextSpan(text: " x" + portfolioAsset.assetAmount.toString(),
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14 )
           ),
-          TextSpan(text: "\nProvento: " + (double.parse(investingDayValue.price) * fnetData.dividend /100  ).toStringAsFixed(2) +"%",
+          TextSpan(text: "\nProvento: " + dividendYeld.toStringAsFixed(2) +"%",
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14 )
           ),
         ]
@@ -65,23 +66,24 @@ class HomeCardWidget extends StatelessWidget {
     //////////////////////////////////////////////////////////////////////
     ///Monta texto do preco medio
     //////////////////////////////////////////////////////////////////////
-    double mockPrice = 140.00;
-    int mockGain = 10;
+    double avPrice = 140.00;
+    double gain = double.parse(investingCurrentValue.price) - avPrice;
+    double gainVar = ( gain /avPrice)*100;
     RichText averagePrice = RichText(
       text: TextSpan(
-        style: DefaultTextStyle.of(context).style,
+        style: DefaultTextStyle.of(context).style,  
         children: <TextSpan>
         [
-          TextSpan(text: "PM: " + mockPrice.toStringAsFixed(2),
+          TextSpan(text: "PM: " + avPrice.toStringAsFixed(2),
             style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18  )
           ),
-          TextSpan(text: "\n+\$"+(mockPrice*mockGain/100).toStringAsFixed(2),
+          TextSpan(text: "\n\$"+gain.toStringAsFixed(2),
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green )
           ),
           TextSpan(text: " | ",
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green )
           ),
-          TextSpan(text: "+"+ mockGain.toString() + "%",
+          TextSpan(text:  gainVar.toStringAsFixed(2) + "%",
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green )
           ),
         ]
@@ -91,8 +93,7 @@ class HomeCardWidget extends StatelessWidget {
     //////////////////////////////////////////////////////////////////////
     ///Monta texto da cotação
     //////////////////////////////////////////////////////////////////////
-    double mockstock = 142.00;
-    int mockstockGain = 1;
+    double priceVar = ( double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open) )/double.parse(investingCurrentValue.open)*100;
     RichText stockValue = RichText(
       text: TextSpan(
         style: DefaultTextStyle.of(context).style,
@@ -107,7 +108,7 @@ class HomeCardWidget extends StatelessWidget {
           //open - 100%
           //var - x%
           //x = var * 100 / open
-          TextSpan(text: ( ( double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open) )/double.parse(investingCurrentValue.open)*100  ).toStringAsFixed(2)
+          TextSpan(text: priceVar.toStringAsFixed(2)
                         +"%",
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: (double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open)) > 0 ? Colors.green : Colors.red)
           ),
@@ -130,10 +131,8 @@ class HomeCardWidget extends StatelessWidget {
     //////////////////////////////////////////////////////////////////////
     ///CARD
     //////////////////////////////////////////////////////////////////////
-    Text ativo = Text(portfolioAsset.assetTicker);
-    Text qtd = Text(portfolioAsset.assetAmount.toString());
 
-    return Card(
+   /* return Card(
       margin: const EdgeInsets.only(top: 4.0, bottom: 4.0),
       color: Colors.white,
       child: Padding(
@@ -154,6 +153,113 @@ class HomeCardWidget extends StatelessWidget {
           ],
         ),
       ),
+    );*/
+
+    return Card(
+      margin: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+      color: Colors.white,
+      child: ExpansionTile(
+        //subtitle: Center(child: Text('...')),
+        trailing: Text(''),
+
+        title:  Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              ticker
+              //,averagePrice
+              ,stockValue
+              ,dividend
+             ],
+          ),
+
+
+        children: <Widget>[
+          Padding(child: Divider(height: 8, thickness: 1), padding:const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 5.0)),
+          //Align(alignment: Alignment.centerLeft, child: Text("Data Pagamento: "+fnetData.paymentDate.toString())),
+          //Align(alignment: Alignment.centerLeft, child:Text("Preco Pagamento: "+investingDayValue.price.toString()) ),
+          //Align(alignment: Alignment.centerLeft, child:Text("Maxima: " + investingCurrentValue.high)),
+          //Align(alignment: Alignment.centerLeft, child:Text("Minima: " + investingCurrentValue.low)),
+          //Align(alignment: Alignment.centerLeft, child:Text("Preço Médio: " + avPrice.toStringAsFixed(2))),
+          //Align(alignment: Alignment.centerLeft, child:Text("Ganho/Perda: " + "\$"+ gain.toStringAsFixed(2) + " | " + gainVar.toStringAsFixed(2) + "%")),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              averagePrice,
+              RichText(
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: <TextSpan>
+        [
+          TextSpan(text: "Max: ",
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: investingCurrentValue.high,
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green)
+          ),
+          TextSpan(text: "\nMin: ",
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: investingCurrentValue.low,
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.red)
+          ),
+        ]
+      ),
+    ),
+            ],
+          ),
+    RichText(
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: <TextSpan>
+        [
+          TextSpan(text: "Data Pgt: ",
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: fnetData.paymentDate.toString(),
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14 )
+          ),
+          TextSpan(text: "\nValor Dia Pgt: ",
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: investingDayValue.price.toString(),
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14 )
+          ),
+        ]
+      ),
+    ),
+
+/*
+    RichText(
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: <TextSpan>
+        [
+          TextSpan(text: "Preço Med: ",
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: avPrice.toStringAsFixed(2),
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14 )
+          ),
+          TextSpan(text: "\nGanho/Perda: ",
+            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
+          ),
+          TextSpan(text: "\$"+ gain.toStringAsFixed(2) + " | " + gainVar.toStringAsFixed(2) + "%",
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: ((double.parse(investingCurrentValue.price) - double.parse(investingCurrentValue.open)) > 0 ? Colors.green : Colors.red))
+    ),
+        ]
+      ),
+    )
+*/
+         
+        ], 
+      ),
     );
+
+    
   }
 }
+
+ // final PortfolioAsset portfolioAsset;
+  //final FNET fnetData;
+  //final InvestingDayValue investingDayValue;
+  //final InvestingCurrentValue investingCurrentValue;
