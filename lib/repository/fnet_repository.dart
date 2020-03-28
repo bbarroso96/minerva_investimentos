@@ -48,11 +48,18 @@ class FnetRepository {
             //bool isValid = response.contains(asset+"11");
             bool isValid = !response.contains(asset + "13");
 
+            //Erro corona vide catch -> b3.fetchFnetDocument(url)
+            if (response.contains("erro uft-8 covid-19"))
+            {
+              isValid = false;
+            }
+  
             //Caso seja o documento certo, sai do loop
             if (isValid)
             {
               break;
             }
+
           }
 
           //TODO: validar se foi possível recuperar documento

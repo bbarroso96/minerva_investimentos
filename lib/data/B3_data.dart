@@ -67,6 +67,14 @@ class B3Data
     catch(e)
     {
       print(e.toString());
+
+      //  28/03/2020
+      //  Add tratamento de erro se o aviso aos coistas for um PDF
+      //  Com o covid-19 estão lançando no aviso aos coistas PDF sobre as medidas do fundo
+      //  Não serve e quabra o código
+      //  Tem que tratar esse caso específico para retorar vazio para nao quebrar
+      if(e.toString().contains("FormatException: Bad UTF-8 encoding")){return "erro uft-8 covid-19";}
+
       throw Exception(e);
     } 
 
