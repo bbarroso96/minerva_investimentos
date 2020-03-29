@@ -33,6 +33,7 @@ class HomeProvider extends ChangeNotifier
 
   String _enteredAsset;
   String _enteredAmount;
+  String _enteredAvPrc;
 
   //TODO: implementar lógica da lista de ativos
   List<B3Asset> _b3AssetList = List<B3Asset>();
@@ -99,6 +100,7 @@ class HomeProvider extends ChangeNotifier
     print('Submit asset: ');
     print(_enteredAsset); 
     print(_enteredAmount);
+    print(_enteredAvPrc);
 
     //var isValid = await validadeSubmitAsset();
     
@@ -108,6 +110,7 @@ class HomeProvider extends ChangeNotifier
     PortfolioAsset portfolioAsset = PortfolioAsset();
     portfolioAsset.ticker = _enteredAsset;
     portfolioAsset.amount = int.parse(_enteredAmount);
+    portfolioAsset.averagePrice = double.parse(_enteredAvPrc);
     _portfolioList.add(portfolioAsset);
 
     //Adiciona um fnet vazio
@@ -230,6 +233,12 @@ class HomeProvider extends ChangeNotifier
       return "Ativo deve ser preenchido";
     }
 
+    //Verifica se preço médio não é nulo
+    if(_enteredAvPrc.isEmpty)
+    {
+      return "Preço médio deve ser preenchido";
+    }
+
     //Verifica se a quantidade não é nula
     if(_enteredAmount.isEmpty)
     {
@@ -299,11 +308,15 @@ class HomeProvider extends ChangeNotifier
     //Novo - Antigo
     _totalEarnings += ( (int.parse(_enteredAmount) - _portfolioList[editIndex].amount)  * _fnetList[editIndex].dividend ) ;
 
+    //Atualiza PM 
+    _portfolioList[editIndex].averagePrice = double.parse(_enteredAvPrc);
+
     //Atualiza qtd
     _portfolioList[editIndex].amount = int.parse(_enteredAmount);
 
     notifyListeners();
 
+    //Edita ativo no bd
     portfolioProvider.editAssetFromPorfolio(_portfolioList[editIndex]);
   }
 
@@ -315,6 +328,10 @@ class HomeProvider extends ChangeNotifier
 
    String get enteredAmount => _enteredAmount;
    void set enteredAmount(String amount)=> _enteredAmount = amount;
+
+   String get enteredAvPrc => _enteredAvPrc;
+   void set enteredAvPrc(String avPrc)=> _enteredAvPrc = avPrc;
+
 
    List<PortfolioAsset> get portfolioList => _portfolioList;
 

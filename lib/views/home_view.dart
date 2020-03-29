@@ -196,6 +196,25 @@ class HomeView extends StatelessWidget {
                           width: 10,
                         ),
 
+                      Flexible(
+                          flex: 2,
+                          child: TextFormField(
+                            enabled: true,
+                            decoration: InputDecoration(
+                              helperText: 'Preço Médio',
+                            ),
+                            keyboardType: TextInputType.number,
+                            obscureText: false,
+                            autovalidate: true, //Define autovalidação
+                            validator: (String apvPrc) {
+                              provider.enteredAvPrc = apvPrc.toUpperCase();
+                            },
+                          ),
+                        ),
+
+                        SizedBox(
+                          width: 10,
+                        ),
                         //Imput qtd
                         Flexible(
                           flex: 1,
@@ -272,6 +291,27 @@ class HomeView extends StatelessWidget {
                             textCapitalization: TextCapitalization.characters,
                             obscureText: false,
                             autovalidate: true, //Define autovalidação
+                          ),
+                        ),
+
+                        SizedBox(
+                          width: 10,
+                        ),
+
+                        Flexible(
+                          flex: 2,
+                          child: TextFormField(
+                            enabled: true,
+                            initialValue: provider.portfolioList[index].averagePrice.toString(),
+                            decoration: InputDecoration(
+                              helperText: 'Preço Médio',
+                            ),
+                            keyboardType: TextInputType.number,
+                            obscureText: false,
+                            autovalidate: true, //Define autovalidação
+                            validator: (String apvPrc) {
+                              provider.enteredAvPrc = apvPrc.toUpperCase();
+                            },
                           ),
                         ),
 

@@ -47,22 +47,27 @@ class PortfolioAsset
 {
   String ticker;
   int amount;
+  double averagePrice;
 
   PortfolioAsset({
     this.ticker,
-    this.amount
+    this.amount,
+    this.averagePrice
   });
 
   String get assetTicker => ticker;
   int get assetAmount => amount;
+  double get assetAveragePrice => averagePrice;
 
   factory PortfolioAsset.fromJson(Map<String, dynamic> data) => PortfolioAsset(
     ticker: data["ticker"],
-    amount: data["amount"]
+    amount: data["amount"],
+    averagePrice: data["averagePrice"]
   );
 
    Map<String, dynamic> toMap() => {
         "ticker": ticker,
-        "amount": amount
+        "amount": amount,
+        "averagePrice": averagePrice
     };
 }

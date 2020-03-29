@@ -19,9 +19,6 @@ class HomeCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     double totalDividend = fnetData.dividend * portfolioAsset.amount;
-    Text price = Text('143,45');
-    Text dividendo = Text('0,82'); 
-
 
     //////////////////////////////////////////////////////////////////////
     ///Monta texto do dividendo
@@ -66,7 +63,8 @@ class HomeCardWidget extends StatelessWidget {
     //////////////////////////////////////////////////////////////////////
     ///Monta texto do preco medio
     //////////////////////////////////////////////////////////////////////
-    double avPrice = 140.00;
+    //double avPrice = 140.00;
+    double avPrice = portfolioAsset.averagePrice;
     double gain = double.parse(investingCurrentValue.price) - avPrice;
     double gainVar = ( gain /avPrice)*100;
     RichText averagePrice = RichText(
@@ -78,13 +76,13 @@ class HomeCardWidget extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18  )
           ),
           TextSpan(text: "\n\$"+gain.toStringAsFixed(2),
-            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green )
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: (gain) > 0 ? Colors.green : Colors.red)
           ),
           TextSpan(text: " | ",
-            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green )
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: (gain) > 0 ? Colors.green : Colors.red)
           ),
           TextSpan(text:  gainVar.toStringAsFixed(2) + "%",
-            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: Colors.green )
+            style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14, color: (gain) > 0 ? Colors.green : Colors.red)
           ),
         ]
       ),
@@ -218,7 +216,7 @@ class HomeCardWidget extends StatelessWidget {
           TextSpan(text: fnetData.paymentDate.toString(),
             style: TextStyle(fontWeight:  FontWeight.w300, fontSize: 14 )
           ),
-          TextSpan(text: "\nValor Dia Pgt: ",
+          TextSpan(text: "\nValor Data Base: ",
             style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16  )
           ),
           TextSpan(text: investingDayValue.price.toString(),

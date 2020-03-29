@@ -53,8 +53,10 @@ class PortfolioProvider
         //DEBUG: printa a resposta
         for (PortfolioAsset a in portfolioList)
         {
+          print("Portfolio do BD");
           print(a.amount);
           print(a.ticker);
+          print(a.averagePrice);
         }
     
     return portfolioList;

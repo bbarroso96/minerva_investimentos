@@ -29,7 +29,8 @@ void populateDb(Database database, int version) async {
   await database.execute("CREATE TABLE portfolio ("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "ticker TEXT,"
-          "amount INT"
+          "amount INT,"
+          "averagePrice REAL"
           ")");
 
   
@@ -125,7 +126,7 @@ Future<List<Map<String, dynamic>>> queryPortfolioTable() async
   {
     Database db = await createDatabase();
 
-  var result = await db.query("portfolio", columns: ["id", "ticker", "amount"]);
+  var result = await db.query("portfolio", columns: ["id", "ticker", "amount", "averagePrice"]);
   
   await db.close();
 
